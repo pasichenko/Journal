@@ -20,10 +20,64 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <FrameLayout
-        android:id="@+id/fragment_container"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:orientation="vertical">
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageButton
+                android:id="@+id/button"
+                android:layout_width="@dimen/btn_fr_calendar"
+                android:layout_height="@dimen/btn_fr_calendar"
+                android:layout_centerVertical="true"
+                android:layout_toStartOf="@+id/dateView"
+                android:background="#0000"
+                android:src="@drawable/left_24dp" />
+
+            <Button
+                android:id="@+id/dateView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="0dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="0dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/background_textview_date"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:textAlignment="center"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textSize="24sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/button3"
+                app:layout_constraintStart_toEndOf="@+id/button"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageButton
+                android:id="@+id/button3"
+                android:layout_width="@dimen/btn_fr_calendar"
+                android:layout_height="@dimen/btn_fr_calendar"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@+id/dateView"
+                android:background="#0000"
+                android:src="@drawable/right_24dp" />
+
+        </RelativeLayout>
+
+        <FrameLayout
+            android:id="@+id/fragment_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+    </LinearLayout>
     <!--<include layout="@layout/content_main" />-->
 
     <android.support.design.widget.FloatingActionButton

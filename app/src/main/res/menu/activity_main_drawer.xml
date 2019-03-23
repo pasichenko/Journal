@@ -9,13 +9,18 @@
             android:icon="@drawable/ic_menu_camera"
             android:title="@string/set_couples_attendance" />
         <item
+            android:id="@+id/reason_for_missing_couples"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="@string/reason_for_missing_couples" />
+        <item
             android:id="@+id/check_couples_attendance"
             android:icon="@drawable/ic_menu_gallery"
             android:title="@string/check_couples_attendance" />
         <item
-            android:id="@+id/report"
+            android:id="@+id/report_couples_attendance"
             android:icon="@drawable/ic_menu_slideshow"
             android:title="@string/report_couples_attendance" />
+
     </group>
 
     <item android:title="Setting">
@@ -27,7 +32,7 @@
             <item
                 android:id="@+id/nav_send"
                 android:icon="@drawable/ic_menu_send"
-                android:title="Send" />
+                android:title="About" />
         </menu>
     </item>
 

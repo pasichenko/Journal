@@ -13,6 +13,10 @@
     <string name="set_couples_attendance">Set couples attendance</string>
     <string name="check_couples_attendance">Check couples attendance</string>
     <string name="report_couples_attendance">Report couples attendance</string>
+    <string name="reason_for_missing_couples">Reason for missing couples</string>
+
     <string name="setting_database">Setting database</string>
     <string name="about">About</string>
+    <string name="left_btn_yesterday"><![CDATA[<]]></string>
+    <string name="right_btn_tomorrow"><![CDATA[>]]></string>
 </resources>

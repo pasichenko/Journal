@@ -1,9 +1,11 @@
 package com.makspasich.journal;
 
+import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.DialogFragment;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -13,17 +15,35 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.Toast;
+
+import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity
         implements
         NavigationView.OnNavigationItemSelectedListener {
 
     private DrawerLayout drawer;
-    @Override
+    Button button;
+       @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+           button = findViewById(R.id.dateView);
+           button.setText(initializeDate());
+           button.setOnClickListener(new View.OnClickListener() {
+               @Override
+               public void onClick(View v) {
+                   DialogFragment datePicker = new DatePickerFragment();
+                   datePicker.show(getSupportFragmentManager(), "data picker");
+               }
+           });
+
+
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -49,7 +69,7 @@ public class MainActivity extends AppCompatActivity
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                    new SetCouplesAttendanceFragment()).commit();
+                    new FragmentSetCouplesAttendance()).commit();
             navigationView.setCheckedItem(R.id.set_couples_attendance);
         }
     }
@@ -72,7 +92,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
+        // Handle action bar item_for_set_co_att clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
@@ -91,16 +111,21 @@ public class MainActivity extends AppCompatActivity
         switch (item.getItemId()){
             case R.id.set_couples_attendance:
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new SetCouplesAttendanceFragment()).commit();
+                        new FragmentSetCouplesAttendance()).commit();
+                break;
+            case R.id.reason_for_missing_couples:
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                        new FragmentReasonForMissingCouples()).commit();
                 break;
             case R.id.check_couples_attendance:
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new CheckCouplesAttendanceFragment()).commit();
+                        new FragmentCheckCouplesAttendance()).commit();
                 break;
-            case R.id.report:
+            case R.id.report_couples_attendance:
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new ReportCouplesAttendanceFragment()).commit();
+                        new FragmentReportCouplesAttendance()).commit();
                 break;
+
             case R.id.setting_database:
                 Toast.makeText(this, R.string.setting_database, Toast.LENGTH_SHORT).show();
                 break;
@@ -112,6 +137,40 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    private String initializeDate(){
+        Calendar calendar = Calendar.getInstance();
+        int yy = calendar.get(Calendar.YEAR);
+        int mm = calendar.get(Calendar.MONTH);
+        int dd = calendar.get(Calendar.DAY_OF_MONTH);
+
+
+
+        String dayOfWeek="";
+        switch (Calendar.getInstance().get(Calendar.DAY_OF_WEEK)) {
+            case 1:
+                dayOfWeek = "Mon";
+                break;
+            case 2:
+                dayOfWeek = "Tue";
+                break;
+            case 3:
+                dayOfWeek = "Wed";
+                break;
+            case 4:
+                dayOfWeek = "Thu";
+                break;
+            case 5:
+                dayOfWeek = "Fri";
+                break;
+            case 6:
+                dayOfWeek = "Sat";
+                break;
+            case 7:
+                dayOfWeek = "Sun";
+                break;
+        }
+        return dayOfWeek + ", " + dd +"." + ((mm+1<10)?"0" + (mm+1):(mm+1)) + "."  + yy;
+    }
 
 
 }
