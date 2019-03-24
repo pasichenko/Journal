@@ -8,6 +8,7 @@
 
     <dimen name="width_btn_in_card_set">50dp</dimen>
     <dimen name="width_btn_in_card">60dp</dimen>
+    <dimen name="width_spinner_in_card">90dp</dimen>
 
     <dimen name="btn_fr_calendar">40dp</dimen>
 

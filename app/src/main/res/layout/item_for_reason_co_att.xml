@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/btn0"
 
-            android:text="НП" />
+            android:text="@string/np" />
 
         <Button
             android:id="@+id/btn2"
@@ -41,7 +41,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/btn0"
             android:layout_toEndOf="@+id/btn1"
-            android:text="ХВ" />
+            android:text="@string/hv" />
 
         <Button
             android:id="@+id/btn3"
@@ -49,7 +49,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/btn0"
             android:layout_toEndOf="@+id/btn2"
-            android:text="ЗАП" />
+            android:text="@string/zap" />
 
         <Button
             android:id="@+id/btn4"
@@ -57,7 +57,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/btn0"
             android:layout_toEndOf="@+id/btn3"
-            android:text="В" />
+            android:text="@string/v" />
 
         <Button
             android:id="@+id/btn5"
@@ -65,7 +65,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/btn0"
             android:layout_toEndOf="@+id/btn4"
-            android:text="ВІДП" />
+            android:text="@string/vidp" />
 
         <Button
             android:id="@+id/btn6"
@@ -73,7 +73,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/btn0"
             android:layout_toEndOf="@+id/btn5"
-            android:text="Ч" />
+            android:text="@string/ch" />
 
 
     </RelativeLayout>
@@ -82,5 +82,5 @@
     <View
         android:layout_width="fill_parent"
         android:layout_height="1dp"
-        android:background="@android:color/black" />
+        android:background="@color/colorSeparator" />
 </android.support.v7.widget.CardView>

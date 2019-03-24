@@ -19,4 +19,22 @@
     <string name="about">About</string>
     <string name="left_btn_yesterday"><![CDATA[<]]></string>
     <string name="right_btn_tomorrow"><![CDATA[>]]></string>
+
+    <!--String visit status-->
+    <string name="np">НП</string>
+    <string name="hv">ХВ</string>
+    <string name="zap">ЗАП</string>
+    <string name="v">В</string>
+    <string name="vidp">ВІДП</string>
+    <string name="ch">Ч</string>
+
+    <string-array name="spinner_visit_status">
+        <item>@string/np</item>
+        <item>@string/hv</item>
+        <item>@string/zap</item>
+        <item>@string/v</item>
+        <item>@string/vidp</item>
+        <item>@string/ch</item>
+    </string-array>
+
 </resources>

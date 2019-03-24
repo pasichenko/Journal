@@ -3,4 +3,9 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="colorSeparator">#D7D7D7</color>
+    <!--Custom Color  Switch-->
+    <!--<color name="disable_foreground_grey">#421620e2</color>-->
+    <!--<color name="disable_thumb_grey">#e6780a0a</color>-->
+    <!--<color name="enable_thumb_grey">#46bddf</color>-->
 </resources>

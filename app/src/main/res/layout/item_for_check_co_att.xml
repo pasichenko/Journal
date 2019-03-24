@@ -12,13 +12,6 @@
         android:paddingLeft="@dimen/paddingForCardHorizontal"
         android:paddingRight="@dimen/paddingForCardHorizontal">
 
-        <!--<ImageView-->
-            <!--android:id="@+id/person_photo"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!---->
-            <!--android:layout_alignParentTop="true"-->
-            <!--android:layout_marginRight="16dp" />-->
 
         <TextView
             android:id="@+id/person_name"
@@ -26,64 +19,108 @@
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:layout_marginBottom="8dp"
+            android:layout_marginBottom="0dp"
             android:textSize="@dimen/textSizeForCard" />
 
-        <!--<TextView-->
-            <!--android:id="@+id/person_age"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_below="@+id/person_name"-->
-            <!--android:layout_toRightOf="@+id/person_photo" />-->
-
-        <Button
-            android:id="@+id/btn1"
+        <android.support.v7.widget.SwitchCompat
+            android:id="@+id/switch1"
             android:layout_width="@dimen/width_btn_in_card"
             android:layout_height="wrap_content"
             android:layout_below="@+id/person_name"
+            android:theme="@style/CustomColorSwitch" />
 
-            android:text="hhh1" />
-
-        <Button
-            android:id="@+id/btn2"
+        <android.support.v7.widget.SwitchCompat
+            android:id="@+id/switch2"
             android:layout_width="@dimen/width_btn_in_card"
             android:layout_height="wrap_content"
             android:layout_below="@+id/person_name"
-            android:layout_toEndOf="@+id/btn1"
-            android:text="hhh2" />
+            android:layout_toEndOf="@+id/switch1"
+            android:theme="@style/CustomColorSwitch" />
 
-        <Button
-            android:id="@+id/btn3"
+        <android.support.v7.widget.SwitchCompat
+            android:id="@+id/switch3"
             android:layout_width="@dimen/width_btn_in_card"
             android:layout_height="wrap_content"
             android:layout_below="@+id/person_name"
-            android:layout_toEndOf="@+id/btn2"
-            android:text="hhh3" />
+            android:layout_toEndOf="@+id/switch2"
+            android:theme="@style/CustomColorSwitch" />
 
-        <Button
-            android:id="@+id/btn4"
+        <android.support.v7.widget.SwitchCompat
+            android:id="@+id/switch4"
             android:layout_width="@dimen/width_btn_in_card"
             android:layout_height="wrap_content"
             android:layout_below="@+id/person_name"
-            android:layout_toEndOf="@+id/btn3"
-            android:text="hhh4" />
+            android:layout_toEndOf="@+id/switch3"
+            android:theme="@style/CustomColorSwitch" />
 
-        <Button
-            android:id="@+id/btn5"
+        <android.support.v7.widget.SwitchCompat
+            android:id="@+id/switch5"
             android:layout_width="@dimen/width_btn_in_card"
             android:layout_height="wrap_content"
             android:layout_below="@+id/person_name"
-            android:layout_toEndOf="@+id/btn4"
-            android:text="hhh5" />
+            android:layout_toEndOf="@+id/switch4"
+            android:theme="@style/CustomColorSwitch" />
 
-        <Button
-            android:id="@+id/btn6"
+        <android.support.v7.widget.SwitchCompat
+            android:id="@+id/switch6"
             android:layout_width="@dimen/width_btn_in_card"
             android:layout_height="wrap_content"
             android:layout_below="@+id/person_name"
-            android:layout_toEndOf="@+id/btn5"
-            android:text="hhh6" />
+            android:layout_toEndOf="@+id/switch5"
+            android:theme="@style/CustomColorSwitch" />
 
+        <Spinner
+            android:id="@+id/spinner1"
+            android:layout_width="@dimen/width_btn_in_card"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/switch1"
+            android:background="@android:color/transparent"
+            android:entries="@array/spinner_visit_status" />
+
+        <Spinner
+            android:id="@+id/spinner2"
+            android:layout_width="@dimen/width_btn_in_card"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/switch2"
+            android:layout_toEndOf="@+id/switch1"
+            android:background="@android:color/transparent"
+            android:entries="@array/spinner_visit_status" />
+
+        <Spinner
+            android:id="@+id/spinner3"
+            android:layout_width="@dimen/width_btn_in_card"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/switch3"
+            android:layout_toEndOf="@+id/switch2"
+            android:background="@android:color/transparent"
+            android:entries="@array/spinner_visit_status" />
+
+        <Spinner
+            android:id="@+id/spinner4"
+            android:layout_width="@dimen/width_btn_in_card"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/switch4"
+            android:layout_toEndOf="@+id/switch3"
+            android:background="@android:color/transparent"
+            android:entries="@array/spinner_visit_status" />
+
+        <Spinner
+            android:id="@+id/spinner5"
+            android:layout_width="@dimen/width_btn_in_card"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/switch5"
+            android:layout_toEndOf="@+id/switch4"
+            android:background="@android:color/transparent"
+            android:entries="@array/spinner_visit_status" />
+
+        <Spinner
+            android:id="@+id/spinner6"
+            android:layout_width="@dimen/width_btn_in_card"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/switch6"
+            android:layout_toEndOf="@+id/switch5"
+            android:background="@android:color/transparent"
+            android:entries="@array/spinner_visit_status" />
 
     </RelativeLayout>
 
@@ -91,5 +128,7 @@
     <View
         android:layout_width="fill_parent"
         android:layout_height="1dp"
-        android:background="@android:color/black" />
+        android:background="@color/colorSeparator" />
+
+
 </android.support.v7.widget.CardView>
