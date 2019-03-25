@@ -145,29 +145,30 @@ public class MainActivity extends AppCompatActivity
 
 
 
-        String dayOfWeek="";
+        String dayOfWeek;
         switch (Calendar.getInstance().get(Calendar.DAY_OF_WEEK)) {
-            case 1:
+            case 2:
                 dayOfWeek = "Mon";
                 break;
-            case 2:
+            case 3:
                 dayOfWeek = "Tue";
                 break;
-            case 3:
+            case 4:
                 dayOfWeek = "Wed";
                 break;
-            case 4:
+            case 5:
                 dayOfWeek = "Thu";
                 break;
-            case 5:
+            case 6:
                 dayOfWeek = "Fri";
                 break;
-            case 6:
+            case 7:
                 dayOfWeek = "Sat";
                 break;
-            case 7:
+            case 1:
                 dayOfWeek = "Sun";
                 break;
+                default:dayOfWeek="";
         }
         return dayOfWeek + ", " + dd +"." + ((mm+1<10)?"0" + (mm+1):(mm+1)) + "."  + yy;
     }
