@@ -61,8 +61,11 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
                 dayOfWeek = "Sun";
                 break;
         }
-
-        dob.setText(dayOfWeek + ", " + dd + "." + ((mm + 1 < 10) ? "0" + (mm + 1) : (mm + 1)) + "." + yy);
+        MainActivity.selectedDay = dd;
+        MainActivity.selectedMonth = mm;
+        MainActivity.selectedYear = yy;
+        dob.setText(dayOfWeek + ", " + ((dd + 1 < 10) ? "0" + (dd + 1) : (dd + 1)) + "." + ((mm + 1 < 10) ? "0" + (mm + 1) : (mm + 1)) + "." + yy);
+        MainActivity.selectedDate = yy + "-" + ((mm + 1 < 10) ? "0" + (mm + 1) : (mm + 1)) + "-" + ((dd + 1 < 10) ? "0" + (dd + 1) : (dd + 1));
 
 
     }

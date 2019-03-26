@@ -15,7 +15,6 @@ android {
         throw new FileNotFoundException("Could not read version.properties!")
     }
 
-
     /*Wrapping inside a method avoids auto incrementing on every gradle task run. Now it runs only when we build apk*/
     ext.autoIncrementBuildNumber = {
 
