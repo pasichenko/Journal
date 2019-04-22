@@ -1,6 +1,5 @@
 package com.makspasich.journal;
 
-import android.content.Intent;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -11,7 +10,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -45,7 +43,7 @@ public class SettingActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
 
         }
-        SettingDBHelper dbHelper = new SettingDBHelper(this);
+        DBHelper dbHelper = new DBHelper(this);
         mDatabase = dbHelper.getWritableDatabase();
 
         RecyclerView recyclerView = findViewById(R.id.recyclerview);
@@ -100,6 +98,7 @@ public class SettingActivity extends AppCompatActivity {
 
         String name = mEditTextName.getText().toString();
         ContentValues cv = new ContentValues();
+
         cv.put(SQL.SQLColumn.STUDENT_COLUMN_STUDENT, name);
 
         mDatabase.insert(SQL.SQLColumn.TABLE_NAME_STUDENT, null, cv);

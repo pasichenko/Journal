@@ -1,7 +1,9 @@
 package com.makspasich.journal;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -11,9 +13,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import java.util.List;
 
 public class RVAdapterForSetCouplesAttendance extends RecyclerView.Adapter<RVAdapterForSetCouplesAttendance.PersonViewHolder> {
 
@@ -26,12 +25,9 @@ public class RVAdapterForSetCouplesAttendance extends RecyclerView.Adapter<RVAda
     }
 
     public static class PersonViewHolder extends RecyclerView.ViewHolder {
-        //ublic TextView nameText;
         public ImageButton btnButton1;
         public ImageButton btnButton2;
         public Button btnButton3;
-
-
         CardView cv;
         TextView personName;
 
@@ -68,8 +64,11 @@ public class RVAdapterForSetCouplesAttendance extends RecyclerView.Adapter<RVAda
             return;
         }
 
-        String name = mCursor.getString(mCursor.getColumnIndex(DataContract.DataEntry.COLUMN_STUDENT));
-        long id = mCursor.getLong(mCursor.getColumnIndex(DataContract.DataEntry._ID));
+        //final ContentValues contentValues = new ContentValues();
+
+        String name = mCursor.getString(mCursor.getColumnIndex("TS."+SQL.SQLColumn.STUDENT_COLUMN_STUDENT));
+        long id = mCursor.getLong(mCursor.getColumnIndex("TS."+SQL.SQLColumn.STUDENT_COLUMN_ID));
+        Log.d("myLog","id zapisi = "+id);
 
         holder.personName.setText(name);
         holder.itemView.setTag(id);
@@ -78,21 +77,44 @@ public class RVAdapterForSetCouplesAttendance extends RecyclerView.Adapter<RVAda
         holder.btnButton1.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                Log.d("myLog", "Press button 1, posid"+position);
+                SQL.SQLCommand.setStatusMissing(mContext,0,position+1);
+
             }
         });
 
         holder.btnButton2.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                Log.d("myLog", "Press button 2, posid"+position);
+                SQL.SQLCommand.setStatusMissing(mContext,1,position+1);
+//                SQLiteDatabase mDatabase;
+//                DBHelper dbHelper = new DBHelper(mContext);
+//                mDatabase = dbHelper.getWritableDatabase();
+//                contentValues.put(SQL.SQLColumn.ALLDATA_COLUMN_DATE_MISSING, (MainActivity.selectedYear+"-"+MainActivity.selectedMonth+"-"+MainActivity.selectedDay));
+//                contentValues.put(SQL.SQLColumn.ALLDATA_COLUMN_STATUS_MISSISNG, 0);
+//                contentValues.put(SQL.SQLColumn.ALLDATA_COLUMN_ID_STUDENT,position+1);
+//                mDatabase.update(SQL.SQLColumn.TABLE_NAME_ALLDATA, contentValues, SQL.SQLColumn.ALLDATA_COLUMN_ID + "= ?", new String[] {Integer.toString(position)});
+//                Log.d("myLog", "Press button 1, posid"+position);
+////                swapCursor(mDatabase.query(table, columns, null, null, null, null, null));
+//                contentValues.clear();
+//                mDatabase.close();
             }
         });
 
         holder.btnButton3.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                Log.d("myLog", "Press button 3, posid"+position);
+                SQL.SQLCommand.setStatusMissing(mContext,2,position+1);
+//                SQLiteDatabase mDatabase;
+//                DBHelper dbHelper = new DBHelper(mContext);
+//                mDatabase = dbHelper.getWritableDatabase();
+//                contentValues.put(SQL.SQLColumn.ALLDATA_COLUMN_DATE_MISSING, (MainActivity.selectedYear+"-"+MainActivity.selectedMonth+"-"+MainActivity.selectedDay));
+//                contentValues.put(SQL.SQLColumn.ALLDATA_COLUMN_STATUS_MISSISNG, 0);
+//                contentValues.put(SQL.SQLColumn.ALLDATA_COLUMN_ID_STUDENT,position+1);
+//                mDatabase.update(SQL.SQLColumn.TABLE_NAME_ALLDATA, contentValues, SQL.SQLColumn.ALLDATA_COLUMN_ID + "= ?", new String[] {Integer.toString(position)});
+//                Log.d("myLog", "Press button 1, posid"+position);
+////                swapCursor(mDatabase.query(table, columns, null, null, null, null, null));
+//                contentValues.clear();
+//                mDatabase.close();
             }
         });
 
