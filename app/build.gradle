@@ -4,48 +4,50 @@ android {
     compileSdkVersion 28
 
     def versionPropsFile = file('version.properties')
-    def versionBuild
+    def currentVersionMajor = 1
+    def currentVersionMinor = 1
 
-    /*Setting default value for versionBuild which is the last incremented value stored in the file */
+
     if (versionPropsFile.canRead()) {
         Properties versionProps = new Properties()
+
         versionProps.load(new FileInputStream(versionPropsFile))
-        versionBuild = versionProps['VERSION_BUILD'].toInteger()
+
+        def fileVersionMajor = versionProps['VERSION_MAJOR'].toInteger()
+        def fileVersionMinor = versionProps['VERSION_MINOR'].toInteger()
+        def fileVersionBuild = versionProps['VERSION_BUILD'].toInteger() + 1
+
+        if (fileVersionMajor != currentVersionMajor) {
+            fileVersionMajor = currentVersionMajor
+        }
+        if (fileVersionMinor != currentVersionMinor) {
+            fileVersionMinor = currentVersionMinor
+        }
+
+        versionProps['VERSION_MAJOR'] = fileVersionMajor.toString()
+        versionProps['VERSION_MINOR'] = fileVersionMinor.toString()
+        versionProps['VERSION_BUILD'] = fileVersionBuild.toString()
+        versionProps.store(versionPropsFile.newWriter(), null)
+
+        defaultConfig {
+            applicationId "com.makspasich.journal"
+            minSdkVersion 19
+            targetSdkVersion 28
+            versionCode 1
+            versionName fileVersionMajor + "." + fileVersionMinor + " build " + fileVersionBuild
+            testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        }
+        buildTypes {
+            release {
+                minifyEnabled false
+                proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            }
+        }
     } else {
         throw new FileNotFoundException("Could not read version.properties!")
     }
 
-    /*Wrapping inside a method avoids auto incrementing on every gradle task run. Now it runs only when we build apk*/
-    ext.autoIncrementBuildNumber = {
 
-        if (versionPropsFile.canRead()) {
-            Properties versionProps = new Properties()
-            versionProps.load(new FileInputStream(versionPropsFile))
-            versionBuild = versionProps['VERSION_BUILD'].toInteger() + 1
-            versionProps['VERSION_BUILD'] = versionBuild.toString()
-            versionProps.store(versionPropsFile.newWriter(), null)
-        } else {
-            throw new FileNotFoundException("Could not read version.properties!")
-        }
-    }
-
-
-
-
-    defaultConfig {
-        applicationId "com.makspasich.journal"
-        minSdkVersion 19
-        targetSdkVersion 28
-        versionCode 1
-        versionName "1.3 build " + versionBuild
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-    }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
 }
 
 dependencies {
