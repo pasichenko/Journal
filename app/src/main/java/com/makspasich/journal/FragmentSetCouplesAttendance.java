@@ -12,8 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.List;
-
 
 public class FragmentSetCouplesAttendance extends Fragment {
     View view;
@@ -28,9 +26,6 @@ public class FragmentSetCouplesAttendance extends Fragment {
 
         DBHelper dbHelper = new DBHelper(getActivity());
 
-
-
-
         mDatabase = dbHelper.getWritableDatabase();
 
         RecyclerView recyclerView = view.findViewById(R.id.rv_set);
@@ -43,33 +38,19 @@ public class FragmentSetCouplesAttendance extends Fragment {
 
     private Cursor getAllItems() {
 
-        String table = SQL.SQLColumn.TABLE_NAME_STUDENT+" as TS left join "+ SQL.SQLColumn.TABLE_NAME_ALLDATA +" as AD on "+"TS."+ SQL.SQLColumn.STUDENT_COLUMN_ID+" = AD."+ SQL.SQLColumn.ALLDATA_COLUMN_ID_STUDENT;
+        String table = SQL.SQLColumn.TABLE_NAME_STUDENT + " as TS left join " + SQL.SQLColumn.TABLE_NAME_ALLDATA + " as AD on " + "TS." + SQL.SQLColumn.STUDENT_COLUMN_ID + " = AD." + SQL.SQLColumn.ALLDATA_COLUMN_ID_STUDENT;
         Log.d("myLog", table);
-        String selection = "AD."+SQL.SQLColumn.ALLDATA_COLUMN_STATUS_MISSISNG+" IS NULL ";
+        String selection = "AD." + SQL.SQLColumn.ALLDATA_COLUMN_STATUS_MISSISNG + " IS NULL ";
         Log.d("myLogselection", selection);
-        String[] selectionArgs = {"0","1","2"};
+        String[] selectionArgs = {"0", "1", "2"};
 
         Cursor cursor = mDatabase.query(table, null, null, null, null, null, null);
 //        Cursor cursor = mDatabase.rawQuery(table, null);
-        Log.d("myLog!!!!!!!!!!!!","before query with WHERE");
-        logCursor(cursor);
+        Log.d("myLog!!!!!!!!!!!!", "before query with WHERE");
+        DBHelper.logCursor(cursor);
         return cursor;
 
     }
-    void logCursor(Cursor cursor) {
-        Log.d("myLog", "StartLogCursor");
-        if (cursor != null) {
-            if (cursor.moveToFirst()) {
-                String str;
-                do {
-                    str = "";
-                    for (String cn : cursor.getColumnNames()) {
-                        str = str.concat(cn + " = " + cursor.getString(cursor.getColumnIndex(cn)) + "; ");
-                    }
-                    Log.d("myLog", str);
-                } while (cursor.moveToNext());
-            }
-        } else Log.d("myLog", "Cursor is null");
-        Log.d("myLog", "ENDLogCursor");
-    }
+
+
 }

@@ -33,9 +33,6 @@ public class FragmentCheckCouplesAttendance extends Fragment {
 
         DBHelper dbHelper = new DBHelper(getActivity());
 
-
-
-
         mDatabase = dbHelper.getWritableDatabase();
 
         RecyclerView recyclerView = view.findViewById(R.id.rv_check);
@@ -56,24 +53,9 @@ public class FragmentCheckCouplesAttendance extends Fragment {
         Cursor cursor = mDatabase.query(table, null, null, null, null, null, null);
 //        Cursor cursor = mDatabase.rawQuery(table, null);
         Log.d("myLog!!!!!!!!!!!!","before query with WHERE");
-        logCursor(cursor);
+        DBHelper.logCursor(cursor);
         return cursor;
 
     }
-    void logCursor(Cursor cursor) {
-        Log.d("myLog", "StartLogCursor");
-        if (cursor != null) {
-            if (cursor.moveToFirst()) {
-                String str;
-                do {
-                    str = "";
-                    for (String cn : cursor.getColumnNames()) {
-                        str = str.concat(cn + " = " + cursor.getString(cursor.getColumnIndex(cn)) + "; ");
-                    }
-                    Log.d("myLog", str);
-                } while (cursor.moveToNext());
-            }
-        } else Log.d("myLog", "Cursor is null");
-        Log.d("myLog", "ENDLogCursor");
-    }
+
 }
