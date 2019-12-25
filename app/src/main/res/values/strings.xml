@@ -17,8 +17,6 @@
 
     <string name="setting_database">Setting database</string>
     <string name="about">About</string>
-    <string name="left_btn_yesterday"><![CDATA[<]]></string>
-    <string name="right_btn_tomorrow"><![CDATA[>]]></string>
 
     <!--String visit status-->
     <string name="np">НП</string>
