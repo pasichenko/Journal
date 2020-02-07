@@ -25,6 +25,7 @@
     <string name="v">В</string>
     <string name="vidp">ВІДП</string>
     <string name="ch">Ч</string>
+    <string name="you_not_member_group">You are not a member of any group</string>
 
     <string-array name="spinner_visit_status">
         <item>@string/np</item>

@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -16,27 +17,49 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 public class MainActivity extends AppCompatActivity
-        implements
-        NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener {
+    private static final String TAG = "MainActivity";
 
-    public static final String DATABASE_NAME = "data.db";
-    public static final int DATABASE_VERSION = 1;
-    public static int selectedDay;
-    public static int selectedMonth;
-    public static int selectedYear;
-    private DrawerLayout drawer;
+    private Unbinder mUnbinder;
+
+    private final FirebaseAuth mAuth;
+    private final DatabaseReference mRootReference;
+
+    //region BindView
+    @BindView(R.id.drawer_layout)
+    protected DrawerLayout drawer;
+    @BindView(R.id.fab)
+    protected FloatingActionButton fab;
+    @BindView(R.id.toolbar)
+    protected Toolbar toolbar;
+    @BindView(R.id.nav_view)
+    protected NavigationView navigationView;
+    //endregion
+
+    private String keyGroup;
+
+    public MainActivity() {
+        mAuth = FirebaseAuth.getInstance();
+        mRootReference = FirebaseDatabase.getInstance().getReference();
+    }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        mUnbinder = ButterKnife.bind(this);
+        keyGroup = getIntent().getStringExtra(SignInActivity.KEY_GROUP);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -45,9 +68,6 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        drawer = findViewById(R.id.drawer_layout);
-
-        NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -55,6 +75,16 @@ public class MainActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
+        TextView displayName = navigationView.getHeaderView(0).findViewById(R.id.display_name);
+        TextView email = navigationView.getHeaderView(0).findViewById(R.id.email);
+        displayName.setText(mAuth.getCurrentUser().getDisplayName());
+        email.setText(mAuth.getCurrentUser().getEmail());
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mUnbinder.unbind();
     }
 
     @Override
@@ -93,26 +123,15 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.set_couples_attendance:
-//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-//                        new FragmentSetCouplesAttendance()).commit();
                 break;
             case R.id.reason_for_missing_couples:
-//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-//                        new FragmentReasonForMissingCouples()).commit();
                 break;
             case R.id.check_couples_attendance:
-//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-//                        new FragmentCheckCouplesAttendance()).commit();
                 break;
             case R.id.report_couples_attendance:
-//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-//                        new FragmentReportCouplesAttendance()).commit();
                 break;
 
             case R.id.setting_database:
-//                Intent intent = new Intent(MainActivity.this, SettingActivity.class);
-//                startActivity(intent);
-                //Toast.makeText(this, R.string.setting_database, Toast.LENGTH_SHORT).show();
                 break;
             case R.id.nav_send:
                 Toast.makeText(this, R.string.about, Toast.LENGTH_SHORT).show();
@@ -121,5 +140,4 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
 }
