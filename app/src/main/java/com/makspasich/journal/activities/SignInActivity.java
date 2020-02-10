@@ -1,4 +1,4 @@
-package com.makspasich.journal;
+package com.makspasich.journal.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -23,9 +23,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.makspasich.journal.activities.StartGroupActivity;
+import com.makspasich.journal.App;
+import com.makspasich.journal.R;
 import com.makspasich.journal.data.model.User;
-import com.makspasich.journal.data.utils.Constants;
 
 import java.util.Objects;
 
@@ -135,7 +135,8 @@ public class SignInActivity extends BaseActivity {
     private void onAuthSuccess(FirebaseUser user) {
         String username = usernameFromEmail(user.getEmail());
         writeNewUser(user.getUid(), username, user.getEmail());
-        mRootReference.child(Constants.KEY_USER_GROUP).addListenerForSingleValueEvent(new ValueEventListener() {
+        showProgressBar();
+        mRootReference.child(App.KEY_USER_GROUP).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 boolean isFound = false;
@@ -157,6 +158,7 @@ public class SignInActivity extends BaseActivity {
                     startActivity(intent);
                     finish();
                 }
+                hideProgressBar();
             }
 
             @Override

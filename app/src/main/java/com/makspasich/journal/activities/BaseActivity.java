@@ -1,4 +1,4 @@
-package com.makspasich.journal;
+package com.makspasich.journal.activities;
 
 import android.content.Context;
 import android.view.View;

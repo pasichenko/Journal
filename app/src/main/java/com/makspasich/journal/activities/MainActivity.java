@@ -1,4 +1,4 @@
-package com.makspasich.journal;
+package com.makspasich.journal.activities;
 
 import android.os.Bundle;
 import android.view.Menu;
@@ -20,6 +20,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.makspasich.journal.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
