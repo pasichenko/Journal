@@ -1,8 +1,11 @@
 package com.makspasich.journal.activities;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,7 +24,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.makspasich.journal.R;
+import com.makspasich.journal.data.utils.CircularTransformation;
 import com.makspasich.journal.fragments.SetAttendance.SetAttendanceFragment;
+import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -85,6 +90,13 @@ public class MainActivity extends AppCompatActivity
 
         mHeaderView.displayName.setText(mAuth.getCurrentUser().getDisplayName());
         mHeaderView.email.setText(mAuth.getCurrentUser().getEmail());
+        Uri photoUri = mAuth.getCurrentUser().getPhotoUrl();
+        Picasso.get()
+                .load(photoUri)
+                .placeholder(R.drawable.account_circle_outline)
+                .error(R.drawable.ic_warning)
+                .transform(new CircularTransformation(0))
+                .into(mHeaderView.avatarImage);
     }
 
     @Override
@@ -114,8 +126,9 @@ public class MainActivity extends AppCompatActivity
 
         } else if (itemSelectedId == R.id.report_couples_attendance) {
 
-        } else if (itemSelectedId == R.id.setting_database) {
-
+        } else if (itemSelectedId == R.id.setting_group) {
+            Intent intent = new Intent(MainActivity.this, SettingGroupActivity.class);
+            startActivity(intent);
         } else if (itemSelectedId == R.id.nav_send) {
             Toast.makeText(this, R.string.about, Toast.LENGTH_SHORT).show();
         }
@@ -136,6 +149,8 @@ public class MainActivity extends AppCompatActivity
         protected TextView displayName;
         @BindView(R.id.email)
         protected TextView email;
+        @BindView(R.id.avatar_image)
+        protected ImageView avatarImage;
 
         HeaderViewHolder(View view) {
             ButterKnife.bind(this, view);
