@@ -1,7 +1,6 @@
 package com.makspasich.journal.activities;
 
 import android.os.Bundle;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -13,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
@@ -21,6 +21,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.makspasich.journal.R;
+import com.makspasich.journal.fragments.SetAttendance.SetAttendanceFragment;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -43,10 +44,12 @@ public class MainActivity extends AppCompatActivity
     @BindView(R.id.toolbar)
     protected Toolbar toolbar;
     @BindView(R.id.nav_view)
-    protected NavigationView navigationView;
+    protected NavigationView mNavigationView;
+
+    private HeaderViewHolder mHeaderView;
     //endregion
 
-    private String keyGroup;
+    private String mKeyGroup;
 
     public MainActivity() {
         mAuth = FirebaseAuth.getInstance();
@@ -58,28 +61,30 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mUnbinder = ButterKnife.bind(this);
-        keyGroup = getIntent().getStringExtra(SignInActivity.KEY_GROUP);
+        View header = mNavigationView.getHeaderView(0);
+        mHeaderView = new HeaderViewHolder(header);
+
+        mKeyGroup = getIntent().getStringExtra(SignInActivity.KEY_GROUP);
         setSupportActionBar(toolbar);
-
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
-        navigationView.setNavigationItemSelectedListener(this);
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
+        bindViews();
+        if (savedInstanceState == null) {
+            replaceFragment(new SetAttendanceFragment(mKeyGroup), R.id.set_attendance);
+        }
+    }
 
-        TextView displayName = navigationView.getHeaderView(0).findViewById(R.id.display_name);
-        TextView email = navigationView.getHeaderView(0).findViewById(R.id.email);
-        displayName.setText(mAuth.getCurrentUser().getDisplayName());
-        email.setText(mAuth.getCurrentUser().getEmail());
+    private void bindViews() {
+        fab.setOnClickListener(view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                .setAction("Action", null).show());
+
+        mNavigationView.setNavigationItemSelectedListener(this);
+
+        mHeaderView.displayName.setText(mAuth.getCurrentUser().getDisplayName());
+        mHeaderView.email.setText(mAuth.getCurrentUser().getEmail());
     }
 
     @Override
@@ -97,48 +102,43 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item_for_set_co_att clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.set_couples_attendance:
-                break;
-            case R.id.reason_for_missing_couples:
-                break;
-            case R.id.check_couples_attendance:
-                break;
-            case R.id.report_couples_attendance:
-                break;
+        int itemSelectedId = item.getItemId();
+        if (itemSelectedId == R.id.set_attendance) {
+            replaceFragment(new SetAttendanceFragment(mKeyGroup), R.id.set_attendance);
+        } else if (itemSelectedId == R.id.check_couples_attendance) {
 
-            case R.id.setting_database:
-                break;
-            case R.id.nav_send:
-                Toast.makeText(this, R.string.about, Toast.LENGTH_SHORT).show();
-                break;
+        } else if (itemSelectedId == R.id.reason_for_missing_couples) {
+
+        } else if (itemSelectedId == R.id.report_couples_attendance) {
+
+        } else if (itemSelectedId == R.id.setting_database) {
+
+        } else if (itemSelectedId == R.id.nav_send) {
+            Toast.makeText(this, R.string.about, Toast.LENGTH_SHORT).show();
         }
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void replaceFragment(Fragment fragment, int itemId) {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .commit();
+        mNavigationView.setCheckedItem(itemId);
+    }
+
+    protected static class HeaderViewHolder {
+        @BindView(R.id.display_name)
+        protected TextView displayName;
+        @BindView(R.id.email)
+        protected TextView email;
+
+        HeaderViewHolder(View view) {
+            ButterKnife.bind(this, view);
+        }
     }
 }

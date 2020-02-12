@@ -169,7 +169,7 @@ public class SignInActivity extends BaseActivity {
     }
 
     private void writeNewUser(String userId, String name, String email) {
-        User user = new User(name, email);
+        User user = new User(userId, name, email);
         mRootReference.child("users").child(userId).setValue(user);
     }
 
