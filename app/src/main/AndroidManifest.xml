@@ -3,6 +3,7 @@
     package="com.makspasich.journal">
 
     <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:name=".App"
         android:allowBackup="true"
@@ -11,7 +12,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activities.StartGroupActivity"></activity>
+        <activity
+            android:name=".activities.SettingGroupActivity"
+            android:label="@string/setting_group"
+            android:theme="@style/AppThemeMaterial"></activity>
+        <activity android:name=".activities.StartGroupActivity" />
         <activity
             android:name=".activities.MainActivity"
             android:label="@string/app_name"

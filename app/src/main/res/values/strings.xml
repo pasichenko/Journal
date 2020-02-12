@@ -15,7 +15,7 @@
     <string name="report_couples_attendance">Report couples attendance</string>
     <string name="reason_for_missing_couples">Reason for missing couples</string>
 
-    <string name="setting_database">Setting database</string>
+    <string name="setting_group">Setting group</string>
     <string name="about">About</string>
 
     <!--String visit status-->
@@ -26,6 +26,8 @@
     <string name="vidp">ВІДП</string>
     <string name="ch">Ч</string>
     <string name="you_not_member_group">You are not a member of any group</string>
+    <string name="setting">Setting</string>
+    <string name="logout">Logout</string>
 
     <string-array name="spinner_visit_status">
         <item>@string/np</item>

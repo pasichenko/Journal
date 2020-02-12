@@ -23,16 +23,17 @@
 
     </group>
 
-    <item android:title="Setting">
+    <item android:title="@string/setting">
         <menu>
             <item
-                android:id="@+id/setting_database"
-                android:icon="@drawable/ic_menu_share"
-                android:title="@string/setting_database" />
+                android:id="@+id/setting_group"
+                android:icon="@drawable/ic_menu_settings"
+                android:title="@string/setting_group"
+                android:visible="false" />
             <item
-                android:id="@+id/nav_send"
-                android:icon="@drawable/ic_menu_send"
-                android:title="About" />
+                android:id="@+id/nav_logout"
+                android:icon="@drawable/ic_menu_logout"
+                android:title="@string/logout" />
         </menu>
     </item>
 
