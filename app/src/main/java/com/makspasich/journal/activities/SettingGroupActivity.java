@@ -1,5 +1,6 @@
 package com.makspasich.journal.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.transition.AutoTransition;
 import android.transition.TransitionManager;
@@ -42,8 +43,11 @@ public class SettingGroupActivity extends AppCompatActivity {
     //region BindView
     @BindView(R.id.container_view_group_name)
     MaterialCardView containerViewGroupName;
+    @BindView(R.id.container_view_list_student)
+    MaterialCardView containerViewListStudent;
 
     GroupNameViewHolder mGroupNameViewHolder;
+    StudentsViewHolder mStudentsViewHolder;
     //endregion
 
     private String mKeyGroup;
@@ -63,6 +67,7 @@ public class SettingGroupActivity extends AppCompatActivity {
         mKeyGroup = getIntent().getStringExtra(SignInActivity.KEY_GROUP);
 
         mGroupNameViewHolder = new GroupNameViewHolder(containerViewGroupName);
+        mStudentsViewHolder = new StudentsViewHolder(containerViewListStudent);
     }
 
     @Override
@@ -73,7 +78,6 @@ public class SettingGroupActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
-
     }
 
     @Override
@@ -84,6 +88,8 @@ public class SettingGroupActivity extends AppCompatActivity {
 
     class GroupNameViewHolder {
         ViewGroup container;
+
+        //region BindView
         @BindView(R.id.group_name_text_view)
         TextView groupNameTextView;
         @BindView(R.id.edit_name_button)
@@ -99,26 +105,27 @@ public class SettingGroupActivity extends AppCompatActivity {
         MaterialButton cancelActionButton;
         @BindView(R.id.save_action_button)
         MaterialButton saveActionButton;
+        //endregion
 
         GroupNameViewHolder(ViewGroup container) {
             ButterKnife.bind(this, container);
             this.container = container;
             editNameButton.setBackgroundResource(R.drawable.ic_edit);
             editNameButton.setOnClickListener(v -> {
-                if (mGroupNameViewHolder.expandableView.getVisibility() == View.GONE) {
+                if (expandableView.getVisibility() == View.GONE) {
                     showExpandableView();
                 } else {
                     hideExpandableView();
                 }
             });
             cancelActionButton.setOnClickListener(v -> {
-                if (mGroupNameViewHolder.expandableView.getVisibility() == View.VISIBLE) {
+                if (expandableView.getVisibility() == View.VISIBLE) {
                     hideExpandableView();
                 }
             });
             mRootReference.child(App.KEY_GROUPS).child(mKeyGroup).addValueEventListener(getNameGroup);
             saveActionButton.setOnClickListener(view ->
-                    //TODO: implementing change name group
+                    //TODO: implementing change last first name student
                     Toast.makeText(getBaseContext(), "This functionality in progress", Toast.LENGTH_SHORT).show());
         }
 
@@ -148,5 +155,32 @@ public class SettingGroupActivity extends AppCompatActivity {
 
             }
         };
+    }
+
+    class StudentsViewHolder {
+        ViewGroup container;
+
+        //region BindView
+        @BindView(R.id.student_list_text_view)
+        TextView studentListTextView;
+        @BindView(R.id.check_student_list_button)
+        Button checkStudentListButton;
+        //endregion
+
+        public StudentsViewHolder(ViewGroup container) {
+            ButterKnife.bind(this, container);
+            this.container = container;
+            checkStudentListButton.setBackgroundResource(R.drawable.ic_eye);
+            checkStudentListButton.setOnClickListener(v -> {
+                Intent intent = new Intent(SettingGroupActivity.this, SettingStudentsActivity.class);
+                intent.putExtra(SignInActivity.KEY_GROUP, mKeyGroup);
+                startActivity(intent);
+            });
+            this.container.setOnClickListener(v -> {
+                Intent intent = new Intent(SettingGroupActivity.this, SettingStudentsActivity.class);
+                intent.putExtra(SignInActivity.KEY_GROUP, mKeyGroup);
+                startActivity(intent);
+            });
+        }
     }
 }
