@@ -13,9 +13,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".activities.SettingTypesMissingActivity"
+            android:label="@string/types_missing"
+            android:theme="@style/AppThemeMaterial" />
+        <activity
             android:name=".activities.SettingStudentsActivity"
             android:label="@string/students"
-            android:theme="@style/AppThemeMaterial"></activity>
+            android:theme="@style/AppThemeMaterial" />
         <activity
             android:name=".activities.SettingGroupActivity"
             android:label="@string/setting_group"

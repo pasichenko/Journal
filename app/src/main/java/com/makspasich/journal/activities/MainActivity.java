@@ -146,7 +146,7 @@ public class MainActivity extends AppCompatActivity
             replaceFragment(new SetAttendanceFragment(mKeyGroup), R.id.set_attendance);
         } else if (itemSelectedId == R.id.check_couples_attendance) {
 
-        } else if (itemSelectedId == R.id.reason_for_missing_couples) {
+        } else if (itemSelectedId == R.id.Set_reason_for_missing) {
 
         } else if (itemSelectedId == R.id.report_couples_attendance) {
 

@@ -45,9 +45,12 @@ public class SettingGroupActivity extends AppCompatActivity {
     MaterialCardView containerViewGroupName;
     @BindView(R.id.container_view_list_student)
     MaterialCardView containerViewListStudent;
+    @BindView(R.id.container_view_list_types_missing)
+    MaterialCardView containerViewTypesMissing;
 
     GroupNameViewHolder mGroupNameViewHolder;
     StudentsViewHolder mStudentsViewHolder;
+    TypeMissingViewHolder mTypeMissingViewHolder;
     //endregion
 
     private String mKeyGroup;
@@ -68,6 +71,7 @@ public class SettingGroupActivity extends AppCompatActivity {
 
         mGroupNameViewHolder = new GroupNameViewHolder(containerViewGroupName);
         mStudentsViewHolder = new StudentsViewHolder(containerViewListStudent);
+        mTypeMissingViewHolder = new TypeMissingViewHolder(containerViewTypesMissing);
     }
 
     @Override
@@ -178,6 +182,33 @@ public class SettingGroupActivity extends AppCompatActivity {
             });
             this.container.setOnClickListener(v -> {
                 Intent intent = new Intent(SettingGroupActivity.this, SettingStudentsActivity.class);
+                intent.putExtra(SignInActivity.KEY_GROUP, mKeyGroup);
+                startActivity(intent);
+            });
+        }
+    }
+
+    class TypeMissingViewHolder {
+        ViewGroup container;
+
+        //region BindView
+        @BindView(R.id.types_missing_text_view)
+        TextView studentListTextView;
+        @BindView(R.id.check_types_missing_button)
+        Button checkStudentListButton;
+        //endregion
+
+        public TypeMissingViewHolder(ViewGroup container) {
+            ButterKnife.bind(this, container);
+            this.container = container;
+            checkStudentListButton.setBackgroundResource(R.drawable.ic_eye);
+            checkStudentListButton.setOnClickListener(v -> {
+                Intent intent = new Intent(SettingGroupActivity.this, SettingTypesMissingActivity.class);
+                intent.putExtra(SignInActivity.KEY_GROUP, mKeyGroup);
+                startActivity(intent);
+            });
+            this.container.setOnClickListener(v -> {
+                Intent intent = new Intent(SettingGroupActivity.this, SettingTypesMissingActivity.class);
                 intent.putExtra(SignInActivity.KEY_GROUP, mKeyGroup);
                 startActivity(intent);
             });

@@ -13,7 +13,7 @@
     <string name="set_couples_attendance">Set attendance</string>
     <string name="check_couples_attendance">Check couples attendance</string>
     <string name="report_couples_attendance">Report couples attendance</string>
-    <string name="reason_for_missing_couples">Reason for missing couples</string>
+    <string name="set_reason_for_missing">Set reason for missing</string>
 
     <string name="setting_group">Setting group</string>
     <string name="about">About</string>
@@ -29,6 +29,7 @@
     <string name="setting">Setting</string>
     <string name="logout">Logout</string>
     <string name="students">Students</string>
+    <string name="types_missing">Types of missing</string>
     <string name="enter_name_group">Enter name group</string>
     <string name="cancel">Cancel</string>
     <string name="save">Save</string>
@@ -44,5 +45,7 @@
     <string name="title_activity_setting_students">SettingStudentsActivity</string>
     <string name="enter_last_name">Enter last name</string>
     <string name="enter_first_name">Enter first name</string>
+    <string name="enter_full_name">Enter full name type</string>
+    <string name="enter_short_name">Enter short name type</string>
 
 </resources>
