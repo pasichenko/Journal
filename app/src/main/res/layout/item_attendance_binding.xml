@@ -1,69 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/cv_set"
+    android:id="@+id/container_card_view"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_marginStart="8dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginEnd="8dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/paddingForCardHorizontal"
-        android:paddingTop="@dimen/paddingForCardVertical"
-        android:paddingRight="@dimen/paddingForCardHorizontal"
-        android:paddingBottom="@dimen/paddingForCardVertical">
-
+        android:layout_height="match_parent">
 
         <TextView
             android:id="@+id/person_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            android:layout_toStartOf="@id/btn1"
+            android:layout_marginBottom="8dp"
+            android:layout_toStartOf="@id/true_button"
             android:singleLine="true"
             android:textSize="@dimen/textSizeForCard"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/btn1"
+            app:layout_constraintEnd_toStartOf="@+id/true_button"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
 
-        <ImageButton
-            android:id="@+id/btn1"
+        <Button
+            android:id="@+id/true_button"
             android:layout_width="@dimen/width_btn_in_card_set"
             android:layout_height="@dimen/width_btn_in_card_set"
-            android:layout_toStartOf="@id/btn2"
-            android:src="@drawable/ic_check_24dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_toStartOf="@id/false_button"
+            android:background="@drawable/ic_check_24dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/btn2"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageButton
-            android:id="@+id/btn2"
-            android:layout_width="@dimen/width_btn_in_card_set"
-            android:layout_height="@dimen/width_btn_in_card_set"
-            android:layout_toStartOf="@id/btn3"
-            android:src="@drawable/ic_close_24dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/btn3"
+            app:layout_constraintEnd_toStartOf="@+id/false_button"
             app:layout_constraintTop_toTopOf="parent" />
 
         <Button
-            android:id="@+id/btn3"
+            android:id="@+id/false_button"
             android:layout_width="@dimen/width_btn_in_card_set"
             android:layout_height="@dimen/width_btn_in_card_set"
-            android:layout_alignParentEnd="true"
-            android:text="\?"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_toStartOf="@id/cancel_button"
+            android:background="@drawable/ic_close_24dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <Button
+            android:id="@+id/cancel_button"
+            android:layout_width="@dimen/width_btn_in_card_set"
+            android:layout_height="@dimen/width_btn_in_card_set"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/ic_cancel"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/manage_attendance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:constraint_referenced_ids="true_button,false_button" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="1dp"
-        android:background="@color/colorSeparator" />
-</androidx.cardview.widget.CardView>
+</com.google.android.material.card.MaterialCardView>

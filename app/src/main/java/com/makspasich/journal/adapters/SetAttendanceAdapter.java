@@ -5,21 +5,27 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.Group;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.card.MaterialCardView;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 import com.makspasich.journal.R;
 import com.makspasich.journal.data.model.Missing;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -28,16 +34,17 @@ public class SetAttendanceAdapter extends RecyclerView.Adapter<SetAttendanceAdap
 
     private static final String TAG = "SetAttendanceAdapter";
     private Context mContext;
-    private Query mQuery;
+    private DatabaseReference mMissingCoupleReference;
     private ChildEventListener mChildEventListener;
 
     private List<String> mMissingIds = new ArrayList<>();
     private List<Missing> mMissings = new ArrayList<>();
 
-    public SetAttendanceAdapter(final Context context, Query query) {
+    public SetAttendanceAdapter(final Context context, DatabaseReference ref) {
         mContext = context;
-        mQuery = query;
+        mMissingCoupleReference = ref;
 
+        Query attendanceQuery = mMissingCoupleReference.orderByChild("student/last_name");
 
         // Create child event listener
         ChildEventListener childEventListener = new ChildEventListener() {
@@ -121,7 +128,7 @@ public class SetAttendanceAdapter extends RecyclerView.Adapter<SetAttendanceAdap
                         Toast.LENGTH_SHORT).show();
             }
         };
-        mQuery.addChildEventListener(childEventListener);
+        attendanceQuery.addChildEventListener(childEventListener);
 
         // Store reference to listener so it can be removed on app stop
         mChildEventListener = childEventListener;
@@ -147,22 +154,62 @@ public class SetAttendanceAdapter extends RecyclerView.Adapter<SetAttendanceAdap
 
     public void cleanupListener() {
         if (mChildEventListener != null) {
-            mQuery.removeEventListener(mChildEventListener);
+            mMissingCoupleReference.removeEventListener(mChildEventListener);
         }
     }
 
     class RVHolder extends RecyclerView.ViewHolder {
+
+        //region BindView
+        @BindView(R.id.container_card_view)
+        MaterialCardView container;
         @BindView(R.id.person_name)
         TextView personName;
+        @BindView(R.id.manage_attendance)
+        Group manageAttendance;
+        @BindView(R.id.true_button)
+        Button trueButton;
+        @BindView(R.id.false_button)
+        Button falseButton;
+        @BindView(R.id.cancel_button)
+        Button cancelButton;
+        //endregion
+
+        String id_missing;
 
         RVHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            trueButton.setBackgroundResource(R.drawable.ic_check_24dp);
+            falseButton.setBackgroundResource(R.drawable.ic_close_24dp);
+            cancelButton.setBackgroundResource(R.drawable.ic_cancel);
+            trueButton.setOnClickListener(view -> updateMissing("present"));
+            falseButton.setOnClickListener(view -> updateMissing("absent"));
+            cancelButton.setOnClickListener(view -> updateMissing("null"));
         }
 
         void bind(Missing missing) {
+            this.id_missing = missing.student.id_student;
             String fio = missing.student.last_name + " " + missing.student.first_name;
             personName.setText(fio);
+            if (missing.is_missing.equals("null")) {
+                manageAttendance.setVisibility(View.VISIBLE);
+                cancelButton.setVisibility(View.GONE);
+            } else {
+                manageAttendance.setVisibility(View.GONE);
+                cancelButton.setVisibility(View.VISIBLE);
+            }
+            if (missing.is_missing.equals("present")) {
+                container.setBackgroundResource(R.color.present_student);
+            } else if (missing.is_missing.equals("absent")) {
+                container.setBackgroundResource(R.color.absent_student);
+            }
+        }
+
+        void updateMissing(String status) {
+            Map<String, Object> data = new HashMap<>();
+            data.put("is_missing", status);
+            mMissingCoupleReference.child(id_missing).updateChildren(data);
         }
     }
 }
