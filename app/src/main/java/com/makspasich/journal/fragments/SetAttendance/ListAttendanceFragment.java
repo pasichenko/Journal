@@ -67,7 +67,7 @@ public class ListAttendanceFragment extends Fragment {
         mAttendanceReference = mRootReference.child(App.KEY_MISSINGS)
                 .child(mKeyGroup)
                 .child(mDate)
-                .child("couple_" + mNumberPair);
+                .child(String.valueOf(mNumberPair));
         mAttendanceReference.addValueEventListener(checkIsExistData);
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));

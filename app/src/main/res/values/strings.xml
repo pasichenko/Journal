@@ -42,5 +42,7 @@
         <item>@string/ch</item>
     </string-array>
     <string name="title_activity_setting_students">SettingStudentsActivity</string>
+    <string name="enter_last_name">Enter last name</string>
+    <string name="enter_first_name">Enter first name</string>
 
 </resources>

@@ -16,6 +16,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.database.ChildEventListener;
@@ -159,8 +160,9 @@ public class SettingStudentAdapter extends RecyclerView.Adapter<SettingStudentAd
     }
 
     public class RVHolder extends RecyclerView.ViewHolder {
-        ViewGroup container;
         //region BindView
+        @BindView(R.id.container_card_view)
+        MaterialCardView containerCardView;
         @BindView(R.id.person_name_text_view)
         TextView personNameTextView;
         @BindView(R.id.uid_text_view)
@@ -171,6 +173,8 @@ public class SettingStudentAdapter extends RecyclerView.Adapter<SettingStudentAd
         Button editStudentButton;
         @BindView(R.id.link_user_button)
         Button linkUserButton;
+        @BindView(R.id.header_view)
+        ConstraintLayout headerView;
         @BindView(R.id.expandable_view)
         ConstraintLayout expandableView;
 
@@ -181,7 +185,7 @@ public class SettingStudentAdapter extends RecyclerView.Adapter<SettingStudentAd
         @BindView(R.id.first_name_til)
         TextInputLayout firstNameTextInputLayout;
         @BindView(R.id.first_name_et)
-        TextInputEditText firstMameEditText;
+        TextInputEditText firstNameEditText;
         @BindView(R.id.cancel_action_button)
         MaterialButton cancelActionButton;
         @BindView(R.id.save_action_button)
@@ -191,7 +195,6 @@ public class SettingStudentAdapter extends RecyclerView.Adapter<SettingStudentAd
         RVHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-            this.container = (ViewGroup) itemView;
             editStudentButton.setBackgroundResource(R.drawable.ic_edit);
             linkUserButton.setBackgroundResource(R.drawable.ic_insert_link);
             editStudentButton.setOnClickListener(v -> {
@@ -220,17 +223,17 @@ public class SettingStudentAdapter extends RecyclerView.Adapter<SettingStudentAd
                 usernameTextView.setText("Username: " + user.username);
             }
             lastNameEditText.setText(student.last_name);
-            firstMameEditText.setText(student.first_name);
+            firstNameEditText.setText(student.first_name);
         }
 
         void hideExpandableView() {
-            TransitionManager.beginDelayedTransition(container, new AutoTransition());
+            TransitionManager.beginDelayedTransition(containerCardView, new AutoTransition());
             expandableView.setVisibility(View.GONE);
             editStudentButton.setBackgroundResource(R.drawable.ic_edit);
         }
 
         void showExpandableView() {
-            TransitionManager.beginDelayedTransition(container, new AutoTransition());
+            TransitionManager.beginDelayedTransition(containerCardView, new AutoTransition());
             expandableView.setVisibility(View.VISIBLE);
             editStudentButton.setBackgroundResource(R.drawable.ic_keyboard_arrow_up);
         }
