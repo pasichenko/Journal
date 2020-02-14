@@ -77,7 +77,7 @@ public class ListAttendanceFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        Query attendanceQuery = mAttendanceReference.orderByChild("last_name");
+        Query attendanceQuery = mAttendanceReference.orderByChild("student/last_name");
         mAdapter = new SetAttendanceAdapter(getContext(), attendanceQuery);
         mRecyclerView.setAdapter(mAdapter);
     }
