@@ -8,6 +8,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -83,11 +84,7 @@ public class AddStudentDialog extends DialogFragment {
         }
         builder.setTitle("Add student");
         builder.setView(mRootView);
-        builder.setPositiveButton("OK", (dialogInterface, i) -> {
-            addStudent();
-            Toast.makeText(mContext, "Student added", Toast.LENGTH_SHORT).show();
-            dismiss();
-        });
+        builder.setPositiveButton("OK", (dialogInterface, i) -> addStudent());
         builder.setNegativeButton(R.string.cancel, null);
 
         lastNameEditText.addTextChangedListener(new TextWatcher() {
@@ -127,15 +124,50 @@ public class AddStudentDialog extends DialogFragment {
                 }
             }
         });
-
+        firstNameEditText.setOnEditorActionListener((textView, actionId, keyEvent) -> {
+            if (actionId == EditorInfo.IME_ACTION_SEND) {
+                addStudent();
+            }
+            return false;
+        });
         dialog = builder.create();
         return dialog;
     }
 
+    private boolean validateLastNameInput() {
+        String loginInput = Objects.requireNonNull(lastNameTextInputLayout.getEditText()).getText().toString().trim();
+
+        if (loginInput.isEmpty()) {
+            lastNameTextInputLayout.setError(getString(R.string.enter_last_name));
+            return false;
+        } else {
+            lastNameTextInputLayout.setError(null);
+            return true;
+        }
+
+    }
+
+    private boolean validateFirstNameInput() {
+        String passwordInput = Objects.requireNonNull(firstNameTextInputLayout.getEditText()).getText().toString().trim();
+
+        if (passwordInput.isEmpty()) {
+            firstNameTextInputLayout.setError(getString(R.string.enter_first_name));
+            return false;
+        } else {
+            firstNameTextInputLayout.setError(null);
+            return true;
+        }
+
+    }
+
     private void addStudent() {
-        Student student = createStudent();
-        writeInStudentsReference(student);
-        writeInMissingsReference(student);
+        if (validateLastNameInput() & validateFirstNameInput()) {
+            Student student = createStudent();
+            writeInStudentsReference(student);
+            writeInMissingsReference(student);
+            Toast.makeText(mContext, "Student added", Toast.LENGTH_SHORT).show();
+            dismiss();
+        }
     }
 
     private Student createStudent() {
