@@ -219,7 +219,7 @@ public class SetAttendanceAdapter extends RecyclerView.Adapter<SetAttendanceAdap
             mMissingCoupleReference.child(keyMissing).updateChildren(data);
 
             FirebaseDatabase.getInstance().getReference()
-                    .child(App.KEY_STUDENT_MISSINGS)
+                    .child(App.KEY_GROUP_STUDENT_DAY_MISSINGS)
                     .child(mKeyGroup)
                     .child(missing.student.id_student)
                     .child(missing.date)

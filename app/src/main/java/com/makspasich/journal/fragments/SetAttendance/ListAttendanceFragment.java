@@ -58,7 +58,7 @@ public class ListAttendanceFragment extends Fragment {
         mRootView = inflater.inflate(R.layout.attendance_list_fragment, container, false);
         mUnbinder = ButterKnife.bind(this, mRootView);
 
-        mAttendanceReference = mRootReference.child(App.KEY_GROUP_MISSINGS)
+        mAttendanceReference = mRootReference.child(App.KEY_GROUP_DAY_COUPLE_MISSINGS)
                 .child(mKeyGroup)
                 .child(mDate)
                 .child(String.valueOf(mNumberPair));
@@ -94,17 +94,32 @@ public class ListAttendanceFragment extends Fragment {
         mAttendanceReference.child(keyMissing).setValue(missing);
 
         mRootReference
-                .child(App.KEY_STUDENT_MISSINGS)
+                .child(App.KEY_GROUP_STUDENT_DAY_MISSINGS)
                 .child(mKeyGroup)
                 .child(student.id_student)
                 .child(mDate)
                 .child("student")
                 .setValue(student);
         mRootReference
-                .child(App.KEY_STUDENT_MISSINGS)
+                .child(App.KEY_GROUP_STUDENT_DAY_MISSINGS)
                 .child(mKeyGroup)
                 .child(student.id_student)
                 .child(mDate)
+                .child("missings")
+                .child(keyMissing)
+                .setValue(missing);
+        mRootReference
+                .child(App.KEY_GROUP_DAY_STUDENT_MISSINGS)
+                .child(mKeyGroup)
+                .child(mDate)
+                .child(student.id_student)
+                .child("student")
+                .setValue(student);
+        mRootReference
+                .child(App.KEY_GROUP_DAY_STUDENT_MISSINGS)
+                .child(mKeyGroup)
+                .child(mDate)
+                .child(student.id_student)
                 .child("missings")
                 .child(keyMissing)
                 .setValue(missing);
