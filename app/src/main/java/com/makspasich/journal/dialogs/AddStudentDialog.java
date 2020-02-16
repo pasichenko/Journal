@@ -135,7 +135,6 @@ public class AddStudentDialog extends DialogFragment {
     private void addStudent() {
         Student student = createStudent();
         writeInStudentsReference(student);
-        writeInGroupStudentsReference(student);
         writeInMissingsReference(student);
     }
 
@@ -151,9 +150,7 @@ public class AddStudentDialog extends DialogFragment {
                 .child(App.KEY_STUDENTS)
                 .child(student.id_student)
                 .setValue(student);
-    }
 
-    private void writeInGroupStudentsReference(Student student) {
         mRootReference
                 .child(App.KEY_GROUP_STUDENTS)
                 .child(mKeyGroup)
@@ -162,17 +159,35 @@ public class AddStudentDialog extends DialogFragment {
     }
 
     private void writeInMissingsReference(Student student) {
-        DatabaseReference missingReference = mRootReference.child(App.KEY_MISSINGS).child(mKeyGroup);
-        missingReference.addValueEventListener(new ValueEventListener() {
+        DatabaseReference missingReference = mRootReference.child(App.KEY_GROUP_MISSINGS).child(mKeyGroup);
+        missingReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot date : dataSnapshot.getChildren()) {
+                    mRootReference
+                            .child(App.KEY_STUDENT_MISSINGS)
+                            .child(mKeyGroup)
+                            .child(student.id_student)
+                            .child(date.getKey())
+                            .child("student")
+                            .setValue(student);
+
                     for (DataSnapshot couple : date.getChildren()) {
+                        String keyMissing = missingReference.child(date.getKey()).child(couple.getKey()).push().getKey();
                         Missing missing = new Missing(date.getKey(), student, "null", null, Integer.valueOf(couple.getKey()));
                         missingReference
                                 .child(date.getKey())
                                 .child(couple.getKey())
+                                .child(keyMissing)
+                                .setValue(missing);
+
+                        mRootReference
+                                .child(App.KEY_STUDENT_MISSINGS)
+                                .child(mKeyGroup)
                                 .child(student.id_student)
+                                .child(date.getKey())
+                                .child("missings")
+                                .child(keyMissing)
                                 .setValue(missing);
                     }
                 }

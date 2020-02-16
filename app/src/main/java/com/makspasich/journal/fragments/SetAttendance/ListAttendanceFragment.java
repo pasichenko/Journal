@@ -22,11 +22,6 @@ import com.makspasich.journal.adapters.SetAttendanceAdapter;
 import com.makspasich.journal.data.model.Missing;
 import com.makspasich.journal.data.model.Student;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -45,8 +40,8 @@ public class ListAttendanceFragment extends Fragment {
     //endregion
 
     private SetAttendanceAdapter mAdapter;
-    private String mKeyGroup;
-    private String mDate;
+    private final String mKeyGroup;
+    private final String mDate;
     private int mNumberPair;
 
     public ListAttendanceFragment(String keyGroup, String mDate, int numberPair) {
@@ -63,7 +58,7 @@ public class ListAttendanceFragment extends Fragment {
         mRootView = inflater.inflate(R.layout.attendance_list_fragment, container, false);
         mUnbinder = ButterKnife.bind(this, mRootView);
 
-        mAttendanceReference = mRootReference.child(App.KEY_MISSINGS)
+        mAttendanceReference = mRootReference.child(App.KEY_GROUP_MISSINGS)
                 .child(mKeyGroup)
                 .child(mDate)
                 .child(String.valueOf(mNumberPair));
@@ -76,7 +71,7 @@ public class ListAttendanceFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        mAdapter = new SetAttendanceAdapter(getContext(), mAttendanceReference);
+        mAdapter = new SetAttendanceAdapter(getContext(), mAttendanceReference, mKeyGroup);
         mRecyclerView.setAdapter(mAdapter);
     }
 
@@ -92,13 +87,27 @@ public class ListAttendanceFragment extends Fragment {
         mUnbinder.unbind();
     }
 
-    private void writeStudentsInCurrentCouple(List<Student> listStudent, List<String> listStudentId) {
-        Map<String, Object> childUpdates = new HashMap<>();
-        for (int i = 0; i < listStudentId.size(); i++) {
-            Missing missing = new Missing(mDate, listStudent.get(i), "null", null, mNumberPair);
-            childUpdates.put(listStudentId.get(i), missing);
-        }
-        mAttendanceReference.updateChildren(childUpdates);
+    private void writeStudentsInMissingsReference(Student student) {
+        String keyMissing = mAttendanceReference.push().getKey();
+        Missing missing = new Missing(mDate, student, "null", null, mNumberPair);
+
+        mAttendanceReference.child(keyMissing).setValue(missing);
+
+        mRootReference
+                .child(App.KEY_STUDENT_MISSINGS)
+                .child(mKeyGroup)
+                .child(student.id_student)
+                .child(mDate)
+                .child("student")
+                .setValue(student);
+        mRootReference
+                .child(App.KEY_STUDENT_MISSINGS)
+                .child(mKeyGroup)
+                .child(student.id_student)
+                .child(mDate)
+                .child("missings")
+                .child(keyMissing)
+                .setValue(missing);
     }
 
     private ValueEventListener checkIsExistData = new ValueEventListener() {
@@ -108,7 +117,7 @@ public class ListAttendanceFragment extends Fragment {
                 mRootReference
                         .child(App.KEY_GROUP_STUDENTS)
                         .child(mKeyGroup)
-                        .addValueEventListener(getGroupStudents);
+                        .addListenerForSingleValueEvent(getGroupStudents);
             }
         }
 
@@ -121,15 +130,11 @@ public class ListAttendanceFragment extends Fragment {
     private ValueEventListener getGroupStudents = new ValueEventListener() {
         @Override
         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-            List<Student> listStudent = new ArrayList<>();
-            List<String> listStudentId = new ArrayList<>();
 
             for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
                 Student student = childSnapshot.getValue(Student.class);
-                listStudent.add(student);
-                listStudentId.add(childSnapshot.getKey());
+                writeStudentsInMissingsReference(student);
             }
-            writeStudentsInCurrentCouple(listStudent, listStudentId);
         }
 
         @Override

@@ -18,7 +18,9 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.makspasich.journal.App;
 import com.makspasich.journal.R;
 import com.makspasich.journal.data.model.Missing;
 
@@ -40,10 +42,12 @@ public class SetAttendanceAdapter extends RecyclerView.Adapter<SetAttendanceAdap
     private List<String> mMissingIds = new ArrayList<>();
     private List<Missing> mMissings = new ArrayList<>();
 
-    public SetAttendanceAdapter(final Context context, DatabaseReference ref) {
+    private final String mKeyGroup;
+
+    public SetAttendanceAdapter(final Context context, DatabaseReference ref, String keyGroup) {
         mContext = context;
         mMissingCoupleReference = ref;
-
+        mKeyGroup = keyGroup;
         Query attendanceQuery = mMissingCoupleReference.orderByChild("student/last_name");
 
         // Create child event listener
@@ -144,7 +148,8 @@ public class SetAttendanceAdapter extends RecyclerView.Adapter<SetAttendanceAdap
 
     @Override
     public void onBindViewHolder(@NonNull RVHolder holder, int position) {
-        holder.bind(mMissings.get(holder.getAdapterPosition()));
+        holder.bind(mMissingIds.get(holder.getAdapterPosition()),
+                mMissings.get(holder.getAdapterPosition()));
     }
 
     @Override
@@ -175,7 +180,8 @@ public class SetAttendanceAdapter extends RecyclerView.Adapter<SetAttendanceAdap
         Button cancelButton;
         //endregion
 
-        String id_missing;
+        String keyMissing;
+        private Missing missing;
 
         RVHolder(@NonNull View itemView) {
             super(itemView);
@@ -188,8 +194,9 @@ public class SetAttendanceAdapter extends RecyclerView.Adapter<SetAttendanceAdap
             cancelButton.setOnClickListener(view -> updateMissing("null"));
         }
 
-        void bind(Missing missing) {
-            this.id_missing = missing.student.id_student;
+        void bind(String keyMissing, Missing missing) {
+            this.keyMissing = keyMissing;
+            this.missing = missing;
             String fio = missing.student.last_name + " " + missing.student.first_name;
             personName.setText(fio);
             if (missing.is_missing.equals("null")) {
@@ -209,7 +216,16 @@ public class SetAttendanceAdapter extends RecyclerView.Adapter<SetAttendanceAdap
         void updateMissing(String status) {
             Map<String, Object> data = new HashMap<>();
             data.put("is_missing", status);
-            mMissingCoupleReference.child(id_missing).updateChildren(data);
+            mMissingCoupleReference.child(keyMissing).updateChildren(data);
+
+            FirebaseDatabase.getInstance().getReference()
+                    .child(App.KEY_STUDENT_MISSINGS)
+                    .child(mKeyGroup)
+                    .child(missing.student.id_student)
+                    .child(missing.date)
+                    .child("missings")
+                    .child(keyMissing)
+                    .updateChildren(data);
         }
     }
 }

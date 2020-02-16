@@ -7,7 +7,8 @@ public class App extends Application {
 
     public static final String KEY_GROUPS = "groups";
     public static final String KEY_USER_GROUP = "user_group";
-    public static final String KEY_MISSINGS = "missings";
+    public static final String KEY_GROUP_MISSINGS = "group_missings";
+    public static final String KEY_STUDENT_MISSINGS = "student_missings";
     public static final String KEY_STUDENTS = "students";
     public static final String KEY_GROUP_STUDENTS = "group_students";
     public static final String KEY_GROUP_TYPES_MISSING = "group_types_missing";
