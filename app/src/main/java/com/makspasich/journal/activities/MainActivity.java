@@ -33,6 +33,7 @@ import com.makspasich.journal.R;
 import com.makspasich.journal.data.model.Group;
 import com.makspasich.journal.data.utils.CircularTransformation;
 import com.makspasich.journal.fragments.SetAttendance.SetAttendanceFragment;
+import com.makspasich.journal.fragments.SetReason.SetReasonMissingFragment;
 import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
@@ -143,10 +144,10 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int itemSelectedId = item.getItemId();
         if (itemSelectedId == R.id.set_attendance) {
-            replaceFragment(new SetAttendanceFragment(mKeyGroup), R.id.set_attendance);
+            replaceFragment(new SetAttendanceFragment(mKeyGroup), itemSelectedId);
+        } else if (itemSelectedId == R.id.set_reason_for_missing) {
+            replaceFragment(new SetReasonMissingFragment(mKeyGroup), itemSelectedId);
         } else if (itemSelectedId == R.id.check_couples_attendance) {
-
-        } else if (itemSelectedId == R.id.Set_reason_for_missing) {
 
         } else if (itemSelectedId == R.id.report_couples_attendance) {
 

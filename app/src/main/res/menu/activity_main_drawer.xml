@@ -9,7 +9,7 @@
             android:icon="@drawable/ic_menu_camera"
             android:title="@string/set_couples_attendance" />
         <item
-            android:id="@+id/Set_reason_for_missing"
+            android:id="@+id/set_reason_for_missing"
             android:icon="@drawable/ic_menu_manage"
             android:title="@string/set_reason_for_missing" />
         <item
