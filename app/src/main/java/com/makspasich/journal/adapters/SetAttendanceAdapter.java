@@ -226,6 +226,15 @@ public class SetAttendanceAdapter extends RecyclerView.Adapter<SetAttendanceAdap
                     .child("missings")
                     .child(keyMissing)
                     .updateChildren(data);
+
+            FirebaseDatabase.getInstance().getReference()
+                    .child(App.KEY_GROUP_DAY_STUDENT_MISSINGS)
+                    .child(mKeyGroup)
+                    .child(missing.date)
+                    .child(missing.student.id_student)
+                    .child("missings")
+                    .child(keyMissing)
+                    .updateChildren(data);
         }
     }
 }
