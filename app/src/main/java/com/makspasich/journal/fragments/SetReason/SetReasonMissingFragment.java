@@ -14,15 +14,21 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.makspasich.journal.App;
 import com.makspasich.journal.R;
 import com.makspasich.journal.adapters.SetReasonMissingAdapter;
+import com.makspasich.journal.data.model.TypeMissing;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -72,8 +78,24 @@ public class SetReasonMissingFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        mAdapter = new SetReasonMissingAdapter(getContext(), mReasonReference);
-        mRecyclerView.setAdapter(mAdapter);
+        mRootReference.child(App.KEY_GROUP_TYPES_MISSING).child(mKeyGroup).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<TypeMissing> types = new ArrayList<>();
+                for (DataSnapshot typeSnapshot : dataSnapshot.getChildren()) {
+                    TypeMissing type = typeSnapshot.getValue(TypeMissing.class);
+                    types.add(type);
+                }
+                mAdapter = new SetReasonMissingAdapter(getContext(), mReasonReference, types, mKeyGroup);
+                mRecyclerView.setAdapter(mAdapter);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     @Override

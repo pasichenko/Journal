@@ -18,12 +18,17 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.makspasich.journal.App;
 import com.makspasich.journal.R;
 import com.makspasich.journal.data.model.Missing;
 import com.makspasich.journal.data.model.Student;
+import com.makspasich.journal.data.model.TypeMissing;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -37,12 +42,16 @@ public class SetReasonMissingAdapter extends RecyclerView.Adapter<SetReasonMissi
 
     private List<String> mStudentIds = new ArrayList<>();
     private List<Student> mStudents = new ArrayList<>();
+    private List<List<String>> mMissingIds = new ArrayList<>();
     private List<List<Missing>> mMissingsByStudent = new ArrayList<>();
+    private List<TypeMissing> mTypes;
+    private String mKeyGroup;
 
-    public SetReasonMissingAdapter(final Context context, DatabaseReference ref) {
+    public SetReasonMissingAdapter(final Context context, DatabaseReference ref, List<TypeMissing> types, String mKeyGroup) {
         mContext = context;
         mReasonReference = ref;
-
+        this.mTypes = types;
+        this.mKeyGroup = mKeyGroup;
 
         // Create child event listener
         ChildEventListener childEventListener = new ChildEventListener() {
@@ -55,13 +64,16 @@ public class SetReasonMissingAdapter extends RecyclerView.Adapter<SetReasonMissi
                 // [START_EXCLUDE]
                 // Update RecyclerView
                 mStudentIds.add(dataSnapshot.getKey());
+                List<String> listMissingIds = new ArrayList<>();
                 List<Missing> listMissing = new ArrayList<>();
-                for (DataSnapshot missingSnapsot : dataSnapshot.child("missings").getChildren()) {
-                    Missing missing = missingSnapsot.getValue(Missing.class);
+                for (DataSnapshot missingSnapshot : dataSnapshot.child("missings").getChildren()) {
+                    Missing missing = missingSnapshot.getValue(Missing.class);
+                    listMissingIds.add(missingSnapshot.getKey());
                     listMissing.add(missing);
                 }
                 Student student = dataSnapshot.child("student").getValue(Student.class);
                 mStudents.add(student);
+                mMissingIds.add(listMissingIds);
                 mMissingsByStudent.add(listMissing);
                 notifyItemInserted(mStudentIds.size() - 1);
                 // [END_EXCLUDE]
@@ -75,11 +87,14 @@ public class SetReasonMissingAdapter extends RecyclerView.Adapter<SetReasonMissi
 
                 int studentIndex = mStudentIds.indexOf(studentKey);
                 if (studentIndex > -1) {
+                    List<String> listMissingIds = new ArrayList<>();
                     List<Missing> listMissing = new ArrayList<>();
-                    for (DataSnapshot missingSnapsot : dataSnapshot.child("missings").getChildren()) {
-                        Missing missing = missingSnapsot.getValue(Missing.class);
+                    for (DataSnapshot missingSnapshot : dataSnapshot.child("missings").getChildren()) {
+                        Missing missing = missingSnapshot.getValue(Missing.class);
+                        listMissingIds.add(missingSnapshot.getKey());
                         listMissing.add(missing);
                     }
+                    mMissingIds.add(listMissingIds);
                     mMissingsByStudent.set(studentIndex, listMissing);
                     Student student = dataSnapshot.child("student").getValue(Student.class);
                     mStudents.set(studentIndex, student);
@@ -100,6 +115,7 @@ public class SetReasonMissingAdapter extends RecyclerView.Adapter<SetReasonMissi
                     // Remove data from the list
                     mStudentIds.remove(studentIndex);
                     mStudents.remove(studentIndex);
+                    mMissingIds.remove(studentIndex);
                     mMissingsByStudent.remove(studentIndex);
                     // Update the RecyclerView
                     notifyItemRemoved(studentIndex);
@@ -138,6 +154,7 @@ public class SetReasonMissingAdapter extends RecyclerView.Adapter<SetReasonMissi
     @Override
     public void onBindViewHolder(@NonNull RVHolder holder, int position) {
         holder.bind(mStudents.get(holder.getAdapterPosition()),
+                mMissingIds.get(holder.getAdapterPosition()),
                 mMissingsByStudent.get(holder.getAdapterPosition()));
     }
 
@@ -177,24 +194,23 @@ public class SetReasonMissingAdapter extends RecyclerView.Adapter<SetReasonMissi
         @BindView(R.id.types_missing_chip_group)
         ChipGroup typesMissingChipGroup;
         //endregion
-        private boolean isMissed = false;
+        private List<Missing> listMissing;
+        private List<String> missingsIds;
 
         RVHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-//            trueButton.setBackgroundResource(R.drawable.ic_check_24dp);
-//            falseButton.setBackgroundResource(R.drawable.ic_close_24dp);
-//            cancelButton.setBackgroundResource(R.drawable.ic_cancel);
-//            trueButton.setOnClickListener(view -> updateMissing("present"));
-//            falseButton.setOnClickListener(view -> updateMissing("absent"));
-//            cancelButton.setOnClickListener(view -> updateMissing("null"));
         }
 
-        void bind(Student student, List<Missing> listMissing) {
-//            this.id_missing = student.id_student;
+
+        void bind(Student student, List<String> missingsIds, List<Missing> listMissing) {
             String fio = student.last_name + " " + student.first_name;
             personName.setText(fio);
+            this.listMissing = listMissing;
+            this.missingsIds = missingsIds;
+            boolean isMissedAnyCouple = false;
             boolean isSetttedTypeMissing = false;
+            TypeMissing typeSelected = null;
             for (Missing missing : listMissing) {
                 if (missing.number_pair == 1) {
                     changeBackgroundMissing(firstCoupleTextView, missing);
@@ -210,25 +226,69 @@ public class SetReasonMissingAdapter extends RecyclerView.Adapter<SetReasonMissi
                     changeBackgroundMissing(sixCoupleTextView, missing);
                 }
                 if (missing.is_missing.equals("absent")) {
-                    isMissed = true;
+                    isMissedAnyCouple = true;
                 }
                 if (missing.type_missing != null) {
                     isSetttedTypeMissing = true;
+                    typeSelected = missing.type_missing;
                 }
             }
-            if (isMissed) {
-                typesMissingChipGroup.setVisibility(View.VISIBLE);
+            if (isMissedAnyCouple) {
+                if (!isSetttedTypeMissing) {
+                    typesMissingChipGroup.setVisibility(View.VISIBLE);
+                } else {
+                    setVisibilityStatusChip(true);
+                }
             } else {
                 typesMissingChipGroup.setVisibility(View.GONE);
+                setVisibilityStatusChip(false);
             }
             if (isSetttedTypeMissing) {
-                statusChip.setVisibility(View.VISIBLE);
-            } else {
-                statusChip.setVisibility(View.GONE);
+                statusChip.setText(typeSelected.short_name_type);
+            }
+            if (typesMissingChipGroup.getVisibility() == View.VISIBLE) {
+                for (TypeMissing type : mTypes) {
+                    Chip chip =
+                            (Chip) LayoutInflater.from(mContext).inflate(R.layout.cat_chip_group_item_choice, typesMissingChipGroup, false);
+                    chip.setText(type.short_name_type);
+                    chip.setOnClickListener(v -> setTypeMissing(type));
+                    typesMissingChipGroup.addView(chip);
+                }
             }
         }
 
-        void changeBackgroundMissing(TextView view, Missing missing) {
+        private void setTypeMissing(TypeMissing type) {
+            Map<String, Object> data = new HashMap<>();
+            data.put("type_missing", type);
+            for (Missing missing : listMissing) {
+                if (missing.is_missing.equals("absent")) {
+                    String keyMissing = missingsIds.get(listMissing.indexOf(missing));
+                    FirebaseDatabase.getInstance().getReference()
+                            .child(App.KEY_GROUP_STUDENT_DAY_MISSINGS)
+                            .child(mKeyGroup)
+                            .child(missing.student.id_student)
+                            .child(missing.date)
+                            .child("missings")
+                            .child(keyMissing)
+                            .updateChildren(data);
+
+                    FirebaseDatabase.getInstance().getReference()
+                            .child(App.KEY_GROUP_DAY_STUDENT_MISSINGS)
+                            .child(mKeyGroup)
+                            .child(missing.date)
+                            .child(missing.student.id_student)
+                            .child("missings")
+                            .child(keyMissing)
+                            .updateChildren(data);
+                }
+            }
+
+            setVisibilityStatusChip(true);
+            statusChip.setText(type.short_name_type);
+            typesMissingChipGroup.setVisibility(View.GONE);
+        }
+
+        private void changeBackgroundMissing(TextView view, Missing missing) {
             view.setText(String.valueOf(missing.number_pair));
 
             if (missing.is_missing.equals("present")) {
@@ -239,6 +299,14 @@ public class SetReasonMissingAdapter extends RecyclerView.Adapter<SetReasonMissi
                 view.setBackgroundResource(R.drawable.border_null);
             }
 
+        }
+
+        private void setVisibilityStatusChip(boolean visibility) {
+            if (visibility) {
+                statusChip.setVisibility(View.VISIBLE);
+            } else {
+                statusChip.setVisibility(View.GONE);
+            }
         }
     }
 }

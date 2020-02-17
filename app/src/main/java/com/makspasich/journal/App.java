@@ -18,9 +18,22 @@ public class App extends Application {
     public static final String KEY_GROUP_TYPES_MISSING = "group_types_missing";
     public static final String KEY_TYPES_MISSING = "types_missing";
 
+    private String keyGroup;
+
     @Override
     public void onCreate() {
         super.onCreate();
 //        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+        instance = this;
+    }
+
+    public String getKeyGroup() {
+        return keyGroup;
+    }
+
+    private App instance;
+
+    public App getInstance(){
+        return instance;
     }
 }
