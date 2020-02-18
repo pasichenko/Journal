@@ -11,8 +11,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <string name="set_couples_attendance">Set attendance</string>
-    <string name="check_couples_attendance">Check couples attendance</string>
-    <string name="report_couples_attendance">Report couples attendance</string>
+    <string name="report_attendance">Report attendance</string>
     <string name="set_reason_for_missing">Set reason for missing</string>
 
     <string name="setting_group">Setting group</string>

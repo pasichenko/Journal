@@ -32,6 +32,7 @@ import com.makspasich.journal.App;
 import com.makspasich.journal.R;
 import com.makspasich.journal.data.model.Group;
 import com.makspasich.journal.data.utils.CircularTransformation;
+import com.makspasich.journal.fragments.CheckAttendance.ReportAttendanceFragment;
 import com.makspasich.journal.fragments.SetAttendance.SetAttendanceFragment;
 import com.makspasich.journal.fragments.SetReason.SetReasonMissingFragment;
 import com.squareup.picasso.Picasso;
@@ -147,10 +148,8 @@ public class MainActivity extends AppCompatActivity
             replaceFragment(new SetAttendanceFragment(mKeyGroup), itemSelectedId);
         } else if (itemSelectedId == R.id.set_reason_for_missing) {
             replaceFragment(new SetReasonMissingFragment(mKeyGroup), itemSelectedId);
-        } else if (itemSelectedId == R.id.check_couples_attendance) {
-
-        } else if (itemSelectedId == R.id.report_couples_attendance) {
-
+        } else if (itemSelectedId == R.id.report_attendance) {
+            replaceFragment(new ReportAttendanceFragment(mKeyGroup), itemSelectedId);
         } else if (itemSelectedId == R.id.setting_group) {
             Intent intent = new Intent(MainActivity.this, SettingGroupActivity.class);
             intent.putExtra(SignInActivity.KEY_GROUP, mKeyGroup);

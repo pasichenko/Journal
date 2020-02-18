@@ -135,18 +135,5 @@
                 app:layout_constraintTop_toBottomOf="@+id/person_name" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <com.google.android.material.chip.ChipGroup
-            android:id="@+id/types_missing_chip_group"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/header_view">
-
-        </com.google.android.material.chip.ChipGroup>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

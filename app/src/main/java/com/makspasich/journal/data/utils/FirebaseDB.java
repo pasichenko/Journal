@@ -15,8 +15,6 @@ public class FirebaseDB {
         String keyStudent = missing.student.id_student;
         Student student = missing.student;
         writeMissingInGroupCoupleMissing(keyGroup, date, numberPair, keyMissing, keyStudent, missing,student);
-        //убрать поле студента для последующий веток БД
-        missing.student = null;
         writeMissingInGroupStudentMissing(keyGroup, date, numberPair, keyMissing, keyStudent, missing,student);
         writeMissingInGroupDayMissing(keyGroup, date, numberPair, keyMissing, keyStudent, missing,student);
     }

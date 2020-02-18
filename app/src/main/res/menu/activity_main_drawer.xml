@@ -13,13 +13,9 @@
             android:icon="@drawable/ic_menu_manage"
             android:title="@string/set_reason_for_missing" />
         <item
-            android:id="@+id/check_couples_attendance"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="@string/check_couples_attendance" />
-        <item
-            android:id="@+id/report_couples_attendance"
+            android:id="@+id/report_attendance"
             android:icon="@drawable/ic_menu_slideshow"
-            android:title="@string/report_couples_attendance" />
+            android:title="@string/report_attendance" />
 
     </group>
 
