@@ -18,17 +18,14 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.makspasich.journal.App;
 import com.makspasich.journal.R;
 import com.makspasich.journal.data.model.Missing;
 import com.makspasich.journal.data.model.Student;
 import com.makspasich.journal.data.model.TypeMissing;
+import com.makspasich.journal.data.utils.FirebaseDB;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -200,6 +197,14 @@ public class SetReasonMissingAdapter extends RecyclerView.Adapter<SetReasonMissi
         RVHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            for (TypeMissing type : mTypes) {
+                Chip chip =
+                        (Chip) LayoutInflater.from(mContext).inflate(R.layout.cat_chip_group_item_choice, typesMissingChipGroup, false);
+                chip.setText(type.short_name_type);
+                chip.setOnClickListener(v -> setTypeMissing(type));
+                typesMissingChipGroup.addView(chip);
+            }
+            statusChip.setOnClickListener(v -> setTypeMissing(null));
         }
 
 
@@ -233,59 +238,43 @@ public class SetReasonMissingAdapter extends RecyclerView.Adapter<SetReasonMissi
                     typeSelected = missing.type_missing;
                 }
             }
+
             if (isMissedAnyCouple) {
-                if (!isSetttedTypeMissing) {
-                    typesMissingChipGroup.setVisibility(View.VISIBLE);
-                } else {
+                if (isSetttedTypeMissing) {
+                    typesMissingChipGroup.setVisibility(View.GONE);
                     setVisibilityStatusChip(true);
+                    statusChip.setText(typeSelected.short_name_type);
+                } else {
+                    typesMissingChipGroup.setVisibility(View.VISIBLE);
+                    setVisibilityStatusChip(false);
                 }
-            } else {
+            }else {
                 typesMissingChipGroup.setVisibility(View.GONE);
                 setVisibilityStatusChip(false);
             }
+
             if (isSetttedTypeMissing) {
                 statusChip.setText(typeSelected.short_name_type);
-            }
-            if (typesMissingChipGroup.getVisibility() == View.VISIBLE) {
-                for (TypeMissing type : mTypes) {
-                    Chip chip =
-                            (Chip) LayoutInflater.from(mContext).inflate(R.layout.cat_chip_group_item_choice, typesMissingChipGroup, false);
-                    chip.setText(type.short_name_type);
-                    chip.setOnClickListener(v -> setTypeMissing(type));
-                    typesMissingChipGroup.addView(chip);
-                }
             }
         }
 
         private void setTypeMissing(TypeMissing type) {
-            Map<String, Object> data = new HashMap<>();
-            data.put("type_missing", type);
-            for (Missing missing : listMissing) {
-                if (missing.is_missing.equals("absent")) {
+            if (type == null) {
+                for (Missing missing : listMissing) {
                     String keyMissing = missingsIds.get(listMissing.indexOf(missing));
-                    FirebaseDatabase.getInstance().getReference()
-                            .child(App.KEY_GROUP_STUDENT_DAY_MISSINGS)
-                            .child(mKeyGroup)
-                            .child(missing.student.id_student)
-                            .child(missing.date)
-                            .child("missings")
-                            .child(keyMissing)
-                            .updateChildren(data);
-
-                    FirebaseDatabase.getInstance().getReference()
-                            .child(App.KEY_GROUP_DAY_STUDENT_MISSINGS)
-                            .child(mKeyGroup)
-                            .child(missing.date)
-                            .child(missing.student.id_student)
-                            .child("missings")
-                            .child(keyMissing)
-                            .updateChildren(data);
+                    String keyStudent = mStudentIds.get(getAdapterPosition());
+                    FirebaseDB.updateTypeMissingInDB(mKeyGroup, missing.date, missing.number_pair, keyMissing, keyStudent, null);
                 }
+            } else {
+                for (Missing missing : listMissing) {
+                    if (missing.is_missing.equals("absent")) {
+                        String keyMissing = missingsIds.get(listMissing.indexOf(missing));
+                        String keyStudent = mStudentIds.get(getAdapterPosition());
+                        FirebaseDB.updateTypeMissingInDB(mKeyGroup, missing.date, missing.number_pair, keyMissing, keyStudent, type);
+                    }
+                }
+                statusChip.setText(type.short_name_type);
             }
-
-            setVisibilityStatusChip(true);
-            statusChip.setText(type.short_name_type);
-            typesMissingChipGroup.setVisibility(View.GONE);
         }
 
         private void changeBackgroundMissing(TextView view, Missing missing) {

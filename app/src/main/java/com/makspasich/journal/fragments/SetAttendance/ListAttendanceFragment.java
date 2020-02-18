@@ -21,6 +21,7 @@ import com.makspasich.journal.R;
 import com.makspasich.journal.adapters.SetAttendanceAdapter;
 import com.makspasich.journal.data.model.Missing;
 import com.makspasich.journal.data.model.Student;
+import com.makspasich.journal.data.utils.FirebaseDB;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -87,43 +88,7 @@ public class ListAttendanceFragment extends Fragment {
         mUnbinder.unbind();
     }
 
-    private void writeStudentsInMissingsReference(Student student) {
-        String keyMissing = mAttendanceReference.push().getKey();
-        Missing missing = new Missing(mDate, student, "null", null, mNumberPair);
 
-        mAttendanceReference.child(keyMissing).setValue(missing);
-
-        mRootReference
-                .child(App.KEY_GROUP_STUDENT_DAY_MISSINGS)
-                .child(mKeyGroup)
-                .child(student.id_student)
-                .child(mDate)
-                .child("student")
-                .setValue(student);
-        mRootReference
-                .child(App.KEY_GROUP_STUDENT_DAY_MISSINGS)
-                .child(mKeyGroup)
-                .child(student.id_student)
-                .child(mDate)
-                .child("missings")
-                .child(keyMissing)
-                .setValue(missing);
-        mRootReference
-                .child(App.KEY_GROUP_DAY_STUDENT_MISSINGS)
-                .child(mKeyGroup)
-                .child(mDate)
-                .child(student.id_student)
-                .child("student")
-                .setValue(student);
-        mRootReference
-                .child(App.KEY_GROUP_DAY_STUDENT_MISSINGS)
-                .child(mKeyGroup)
-                .child(mDate)
-                .child(student.id_student)
-                .child("missings")
-                .child(keyMissing)
-                .setValue(missing);
-    }
 
     private ValueEventListener checkIsExistData = new ValueEventListener() {
         @Override
@@ -148,7 +113,9 @@ public class ListAttendanceFragment extends Fragment {
 
             for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
                 Student student = childSnapshot.getValue(Student.class);
-                writeStudentsInMissingsReference(student);
+                String keyMissing = mAttendanceReference.push().getKey();
+                Missing missing = new Missing(mDate, student, "null", null, mNumberPair);
+                FirebaseDB.createMissingInDB(mKeyGroup, mDate, mNumberPair, keyMissing, missing);
             }
         }
 

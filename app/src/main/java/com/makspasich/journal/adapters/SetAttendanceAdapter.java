@@ -18,16 +18,13 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
-import com.makspasich.journal.App;
 import com.makspasich.journal.R;
 import com.makspasich.journal.data.model.Missing;
+import com.makspasich.journal.data.utils.FirebaseDB;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -214,27 +211,7 @@ public class SetAttendanceAdapter extends RecyclerView.Adapter<SetAttendanceAdap
         }
 
         void updateMissing(String status) {
-            Map<String, Object> data = new HashMap<>();
-            data.put("is_missing", status);
-            mMissingCoupleReference.child(keyMissing).updateChildren(data);
-
-            FirebaseDatabase.getInstance().getReference()
-                    .child(App.KEY_GROUP_STUDENT_DAY_MISSINGS)
-                    .child(mKeyGroup)
-                    .child(missing.student.id_student)
-                    .child(missing.date)
-                    .child("missings")
-                    .child(keyMissing)
-                    .updateChildren(data);
-
-            FirebaseDatabase.getInstance().getReference()
-                    .child(App.KEY_GROUP_DAY_STUDENT_MISSINGS)
-                    .child(mKeyGroup)
-                    .child(missing.date)
-                    .child(missing.student.id_student)
-                    .child("missings")
-                    .child(keyMissing)
-                    .updateChildren(data);
+            FirebaseDB.updateStatusMissingInDB(mKeyGroup,missing.date,missing.number_pair,keyMissing,missing.student.id_student,status);
         }
     }
 }
