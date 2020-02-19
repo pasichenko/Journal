@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity
 
     private String mKeyGroup;
     private String mKeyStudent;
-    private boolean isHeadOfGroup;
+    private boolean isHeadOfGroup = false;
 
     public MainActivity() {
         mAuth = FirebaseAuth.getInstance();
@@ -103,10 +103,12 @@ public class MainActivity extends AppCompatActivity
                         if (savedInstanceState == null) {
                             replaceFragment(new SetAttendanceFragment(mKeyGroup), R.id.set_attendance);
                         }
+                        isHeadOfGroup = true;
                     } else {
                         if (savedInstanceState == null) {
                             replaceFragment(new StudentReportFragment(mKeyGroup, mKeyStudent), R.id.report_attendance);
                         }
+                        isHeadOfGroup = false;
                     }
 
                 }
@@ -162,7 +164,11 @@ public class MainActivity extends AppCompatActivity
         } else if (itemSelectedId == R.id.set_reason_for_missing) {
             replaceFragment(new SetReasonMissingFragment(mKeyGroup), itemSelectedId);
         } else if (itemSelectedId == R.id.report_attendance) {
+            if (isHeadOfGroup){
             replaceFragment(new ReportAttendanceFragment(mKeyGroup), itemSelectedId);
+            }else{
+            replaceFragment(new StudentReportFragment(mKeyGroup, mKeyStudent), itemSelectedId);
+            }
         } else if (itemSelectedId == R.id.setting_group) {
             Intent intent = new Intent(MainActivity.this, SettingGroupActivity.class);
             intent.putExtra(SignInActivity.KEY_GROUP, mKeyGroup);
