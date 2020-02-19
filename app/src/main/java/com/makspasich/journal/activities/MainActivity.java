@@ -35,6 +35,7 @@ import com.makspasich.journal.data.utils.CircularTransformation;
 import com.makspasich.journal.fragments.CheckAttendance.ReportAttendanceFragment;
 import com.makspasich.journal.fragments.SetAttendance.SetAttendanceFragment;
 import com.makspasich.journal.fragments.SetReason.SetReasonMissingFragment;
+import com.makspasich.journal.fragments.StudentReportFragment;
 import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
@@ -64,6 +65,8 @@ public class MainActivity extends AppCompatActivity
     //endregion
 
     private String mKeyGroup;
+    private String mKeyStudent;
+    private boolean isHeadOfGroup;
 
     public MainActivity() {
         mAuth = FirebaseAuth.getInstance();
@@ -79,6 +82,7 @@ public class MainActivity extends AppCompatActivity
         mHeaderView = new HeaderViewHolder(header);
 
         mKeyGroup = getIntent().getStringExtra(SignInActivity.KEY_GROUP);
+        mKeyStudent = getIntent().getStringExtra(SignInActivity.KEY_STUDENT);
         setSupportActionBar(toolbar);
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -86,9 +90,33 @@ public class MainActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         bindViews();
-        if (savedInstanceState == null) {
-            replaceFragment(new SetAttendanceFragment(mKeyGroup), R.id.set_attendance);
-        }
+
+        mRootReference.child(App.KEY_GROUPS).child(mKeyGroup).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Group group = dataSnapshot.getValue(Group.class);
+                if (group != null) {
+                    if (mAuth.getCurrentUser().getUid().equals(group.starosta.user_reference.uid)) {
+                        mNavigationView.getMenu().findItem(R.id.set_attendance).setVisible(true);
+                        mNavigationView.getMenu().findItem(R.id.set_reason_for_missing).setVisible(true);
+                        mNavigationView.getMenu().findItem(R.id.setting_group).setVisible(true);
+                        if (savedInstanceState == null) {
+                            replaceFragment(new SetAttendanceFragment(mKeyGroup), R.id.set_attendance);
+                        }
+                    } else {
+                        if (savedInstanceState == null) {
+                            replaceFragment(new StudentReportFragment(mKeyGroup, mKeyStudent), R.id.report_attendance);
+                        }
+                    }
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private void bindViews() {
@@ -106,22 +134,7 @@ public class MainActivity extends AppCompatActivity
                 .error(R.drawable.ic_warning)
                 .transform(new CircularTransformation(0))
                 .into(mHeaderView.avatarImage);
-        mRootReference.child(App.KEY_GROUPS).child(mKeyGroup).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Group group = dataSnapshot.getValue(Group.class);
-                if (group != null) {
-                    if (mAuth.getCurrentUser().getUid().equals(group.starosta.user_reference.uid)) {
-                        mNavigationView.getMenu().findItem(R.id.setting_group).setVisible(true);
-                    }
-                }
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
 
     }
 

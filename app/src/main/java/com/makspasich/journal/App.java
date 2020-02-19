@@ -17,6 +17,7 @@ public class App extends Application {
     public static final String KEY_GROUP_STUDENTS = "group_students";
     public static final String KEY_GROUP_TYPES_MISSING = "group_types_missing";
     public static final String KEY_TYPES_MISSING = "types_missing";
+    public static final String KEY_USERS = "users";
 
     private String keyGroup;
 

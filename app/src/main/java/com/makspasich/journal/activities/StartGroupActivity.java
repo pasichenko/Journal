@@ -1,5 +1,8 @@
 package com.makspasich.journal.activities;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -82,7 +85,27 @@ public class StartGroupActivity extends AppCompatActivity {
                     .transform(new CircularTransformation(0))
                     .into(avatarUser);
         }
-
+        joinGroupButton.setOnClickListener(v -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(StartGroupActivity.this);
+            builder.setTitle("Join to group")
+                    .setCancelable(true)
+                    .setMessage("Please send this code to owners group \n" + mAuth.getCurrentUser().getUid())
+                    .setPositiveButton("Send code", (dialog, id) -> {
+                        Intent sendIntent = new Intent(Intent.ACTION_SEND);
+                        sendIntent.putExtra(Intent.EXTRA_TEXT, mAuth.getCurrentUser().getUid());
+                        sendIntent.setType("text/plain");
+                        Intent shareIntent = Intent.createChooser(sendIntent, null);
+                        startActivity(shareIntent);
+                    })
+                    .setNegativeButton("Copy code", (dialog, id) -> {
+                        ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                        ClipData clip = ClipData.newPlainText("label", mAuth.getCurrentUser().getUid());
+                        clipboard.setPrimaryClip(clip);
+                        dialog.cancel();
+                    });
+            AlertDialog alert = builder.create();
+            alert.show();
+        });
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()

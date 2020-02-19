@@ -27,8 +27,6 @@ import com.makspasich.journal.App;
 import com.makspasich.journal.R;
 import com.makspasich.journal.data.model.User;
 
-import java.util.Objects;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -40,6 +38,7 @@ public class SignInActivity extends BaseActivity {
 
     private static final int RC_SIGN_IN = 9001;
     public static final String KEY_GROUP = "key_group";
+    public static final String KEY_STUDENT = "key_student";
     private final FirebaseAuth mAuth;
     private final DatabaseReference mRootReference;
     private GoogleSignInClient mGoogleSignInClient;
@@ -136,21 +135,27 @@ public class SignInActivity extends BaseActivity {
         String username = usernameFromEmail(user.getEmail());
         writeNewUser(user.getUid(), username, user.getEmail());
         showProgressBar();
-        mRootReference.child(App.KEY_USER_GROUP).addListenerForSingleValueEvent(new ValueEventListener() {
+        mRootReference.child(App.KEY_USER_GROUP).child(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                boolean isFound = false;
                 String keyGroup = null;
-                for (DataSnapshot userGroup : dataSnapshot.getChildren()) {
-                    if (Objects.equals(userGroup.getKey(), mAuth.getCurrentUser().getUid())) {
-                        isFound = true;
-                        keyGroup = (String) userGroup.getValue();
-                        break;
+                String keyStudent = null;
+                boolean isFound = false;
+                for (DataSnapshot variableSnapshot : dataSnapshot.getChildren()) {
+
+                    if (variableSnapshot.getKey().equals("key_group")) {
+                        keyGroup = (String) variableSnapshot.getValue();
                     }
+                    if (variableSnapshot.getKey().equals("key_student")) {
+                        keyStudent = (String) variableSnapshot.getValue();
+                        isFound = true;
+                    }
+
                 }
                 if (isFound) {
                     Intent intent = new Intent(SignInActivity.this, MainActivity.class);
                     intent.putExtra(KEY_GROUP, keyGroup);
+                    intent.putExtra(KEY_STUDENT, keyStudent);
                     startActivity(intent);
                     finish();
                 } else {

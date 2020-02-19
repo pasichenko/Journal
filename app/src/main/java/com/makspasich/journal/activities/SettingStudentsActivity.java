@@ -66,7 +66,7 @@ public class SettingStudentsActivity extends AppCompatActivity {
     public void onStart() {
         super.onStart();
         Query attendanceQuery = mRootReference.child(App.KEY_GROUP_STUDENTS).child(mKeyGroup).orderByChild("last_name");
-        mAdapter = new SettingStudentAdapter(this, attendanceQuery);
+        mAdapter = new SettingStudentAdapter(this, attendanceQuery, mKeyGroup);
         mRecyclerView.setAdapter(mAdapter);
     }
 

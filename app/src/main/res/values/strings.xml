@@ -46,5 +46,6 @@
     <string name="enter_first_name">Enter first name</string>
     <string name="enter_full_name">Enter full name type</string>
     <string name="enter_short_name">Enter short name type</string>
+    <string name="enter_user_link">Enter user link</string>
 
 </resources>

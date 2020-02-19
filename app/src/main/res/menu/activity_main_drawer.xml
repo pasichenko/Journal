@@ -7,11 +7,13 @@
         <item
             android:id="@+id/set_attendance"
             android:icon="@drawable/ic_menu_camera"
-            android:title="@string/set_couples_attendance" />
+            android:title="@string/set_couples_attendance"
+            android:visible="false" />
         <item
             android:id="@+id/set_reason_for_missing"
             android:icon="@drawable/ic_menu_manage"
-            android:title="@string/set_reason_for_missing" />
+            android:title="@string/set_reason_for_missing"
+            android:visible="false" />
         <item
             android:id="@+id/report_attendance"
             android:icon="@drawable/ic_menu_slideshow"

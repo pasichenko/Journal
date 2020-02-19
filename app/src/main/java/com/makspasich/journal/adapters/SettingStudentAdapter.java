@@ -1,6 +1,7 @@
 package com.makspasich.journal.adapters;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.transition.AutoTransition;
 import android.transition.TransitionManager;
 import android.util.Log;
@@ -24,8 +25,11 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.Query;
 import com.makspasich.journal.R;
+import com.makspasich.journal.activities.SettingStudentsActivity;
+import com.makspasich.journal.activities.SignInActivity;
 import com.makspasich.journal.data.model.Student;
 import com.makspasich.journal.data.model.User;
+import com.makspasich.journal.dialogs.LinkedStudentDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,10 +46,12 @@ public class SettingStudentAdapter extends RecyclerView.Adapter<SettingStudentAd
     private List<String> mStudentIds = new ArrayList<>();
     private List<Student> mStudents = new ArrayList<>();
 
-    public SettingStudentAdapter(final Context context, Query query) {
+    private final String mKeyGroup;
+
+    public SettingStudentAdapter(final Context context, Query query, String keyGroup) {
         mContext = context;
         mQuery = query;
-
+        this.mKeyGroup = keyGroup;
 
         // Create child event listener
         ChildEventListener childEventListener = new ChildEventListener() {
@@ -204,6 +210,7 @@ public class SettingStudentAdapter extends RecyclerView.Adapter<SettingStudentAd
                     hideExpandableView();
                 }
             });
+
             cancelActionButton.setOnClickListener(v -> {
                 if (expandableView.getVisibility() == View.VISIBLE) {
                     hideExpandableView();
@@ -217,6 +224,15 @@ public class SettingStudentAdapter extends RecyclerView.Adapter<SettingStudentAd
         void bind(Student student) {
             String fio = student.last_name + " " + student.first_name;
             personNameTextView.setText(fio);
+            linkUserButton.setOnClickListener(v -> {
+                LinkedStudentDialog custom = new LinkedStudentDialog(mContext);
+                Bundle arg = new Bundle();
+                arg.putString(SignInActivity.KEY_GROUP, mKeyGroup);
+                arg.putString("KEY_STUDENT", student.id_student);
+                custom.setArguments(arg);
+                custom.show(((SettingStudentsActivity) mContext).getSupportFragmentManager(), "");
+            });
+
             User user = student.user_reference;
             if (user != null) {
                 uidTextView.setText("User ID: " + user.uid);

@@ -1,4 +1,4 @@
-package com.makspasich.journal.fragments.SetAttendance;
+package com.makspasich.journal.fragments;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,12 +11,14 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.viewpager.widget.ViewPager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.makspasich.journal.App;
 import com.makspasich.journal.R;
+import com.makspasich.journal.adapters.StudentReportAdapter;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -26,38 +28,63 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class SetAttendanceFragment extends Fragment {
-    private static final String TAG = "SetAttendanceFragment";
+public class StudentReportFragment extends Fragment {
+    private static final String TAG = "SetReasonMissingFragment";
     private View mRootView;
     private Unbinder mUnbinder;
 
+    private final DatabaseReference mRootReference;
+    private DatabaseReference mReportReference;
+
     //region BindView
-    @BindView(R.id.tab_layout)
-    protected TabLayout mTabLayout;
-    @BindView(R.id.view_pager)
-    protected ViewPager mViewPager;
+    @BindView(R.id.recycler_view)
+    protected RecyclerView mRecyclerView;
     //endregion
 
+    private StudentReportAdapter mAdapter;
     private String mKeyGroup;
+    private String mKeyStudent;
     private String mDate;
 
-    public SetAttendanceFragment(String mKeyGroup) {
+    public StudentReportFragment(String mKeyGroup, String mKeyStudent) {
         this.mKeyGroup = mKeyGroup;
+        this.mKeyStudent = mKeyStudent;
         Date currentTime = Calendar.getInstance().getTime();
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         mDate = formatter.format(currentTime);
+        this.mRootReference = FirebaseDatabase.getInstance().getReference();
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        mRootView = inflater.inflate(R.layout.set_attendance_fragment, container, false);
+        mRootView = inflater.inflate(R.layout.check_attendance_fragment, container, false);
         mUnbinder = ButterKnife.bind(this, mRootView);
         setHasOptionsMenu(true);
-        mViewPager.setAdapter(new PagerAdapter(getChildFragmentManager()));
-        mTabLayout.setupWithViewPager(mViewPager);
+
+        mReportReference = mRootReference.child(App.KEY_GROUP_STUDENT_DAY_MISSINGS)
+                .child(mKeyGroup)
+                .child(mKeyStudent)
+                .child(mDate)
+                .child("missings");
+
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         return mRootView;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        mAdapter = new StudentReportAdapter(getContext(), mReportReference);
+        mRecyclerView.setAdapter(mAdapter);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mAdapter.cleanupListener();
     }
 
     @Override
@@ -80,28 +107,5 @@ public class SetAttendanceFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         mUnbinder.unbind();
-    }
-
-    private class PagerAdapter extends FragmentPagerAdapter {
-
-        private PagerAdapter(FragmentManager supportFragmentManager) {
-            super(supportFragmentManager);
-        }
-
-        @NonNull
-        @Override
-        public Fragment getItem(int position) {
-            return ListAttendanceFragment.newInstance(mKeyGroup, mDate, position + 1);
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return String.valueOf(position + 1);
-        }
-
-        @Override
-        public int getCount() {
-            return 6;
-        }
     }
 }

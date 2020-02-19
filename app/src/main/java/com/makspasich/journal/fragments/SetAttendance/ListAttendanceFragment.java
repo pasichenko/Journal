@@ -45,11 +45,20 @@ public class ListAttendanceFragment extends Fragment {
     private final String mDate;
     private int mNumberPair;
 
-    public ListAttendanceFragment(String keyGroup, String mDate, int numberPair) {
+    public static ListAttendanceFragment newInstance(String keyGroup, String mDate, int numberPair) {
+        return new ListAttendanceFragment(keyGroup, mDate, numberPair);
+    }
+
+    private ListAttendanceFragment(String keyGroup, String mDate, int numberPair) {
         this.mKeyGroup = keyGroup;
         this.mDate = mDate;
         this.mNumberPair = numberPair;
         this.mRootReference = FirebaseDatabase.getInstance().getReference();
+        mAttendanceReference = mRootReference.child(App.KEY_GROUP_DAY_COUPLE_MISSINGS)
+                .child(mKeyGroup)
+                .child(mDate)
+                .child(String.valueOf(mNumberPair));
+        mAttendanceReference.addListenerForSingleValueEvent(checkIsExistData);
     }
 
     @Nullable
@@ -58,12 +67,6 @@ public class ListAttendanceFragment extends Fragment {
         super.onCreateView(inflater, container, savedInstanceState);
         mRootView = inflater.inflate(R.layout.attendance_list_fragment, container, false);
         mUnbinder = ButterKnife.bind(this, mRootView);
-
-        mAttendanceReference = mRootReference.child(App.KEY_GROUP_DAY_COUPLE_MISSINGS)
-                .child(mKeyGroup)
-                .child(mDate)
-                .child(String.valueOf(mNumberPair));
-        mAttendanceReference.addValueEventListener(checkIsExistData);
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         return mRootView;
@@ -87,8 +90,6 @@ public class ListAttendanceFragment extends Fragment {
         super.onDestroyView();
         mUnbinder.unbind();
     }
-
-
 
     private ValueEventListener checkIsExistData = new ValueEventListener() {
         @Override
