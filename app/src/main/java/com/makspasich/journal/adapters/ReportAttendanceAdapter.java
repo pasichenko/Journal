@@ -232,7 +232,7 @@ public class ReportAttendanceAdapter extends RecyclerView.Adapter<ReportAttendan
                     statusChip.setText(typeSelected.short_name_type);
                 } else {
                     setVisibilityStatusChip(true);
-                    statusChip.setText("Not set");
+                    statusChip.setText(R.string.not_set);
                 }
             } else {
                 setVisibilityStatusChip(false);

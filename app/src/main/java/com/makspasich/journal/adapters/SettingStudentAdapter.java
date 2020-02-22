@@ -235,8 +235,8 @@ public class SettingStudentAdapter extends RecyclerView.Adapter<SettingStudentAd
 
             User user = student.user_reference;
             if (user != null) {
-                uidTextView.setText("User ID: " + user.uid);
-                usernameTextView.setText("Username: " + user.username);
+                uidTextView.setText(mContext.getString(R.string.user_id, user.uid));
+                usernameTextView.setText(mContext.getString(R.string.username, user.username));
             }
             lastNameEditText.setText(student.last_name);
             firstNameEditText.setText(student.first_name);

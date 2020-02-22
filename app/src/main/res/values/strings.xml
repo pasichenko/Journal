@@ -1,14 +1,8 @@
 <resources>
     <string name="app_name">Journal</string>
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
-    <string name="nav_header_desc">Navigation header</string>
-    <string name="action_settings">Settings</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
+    <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
+    <string name="nav_header_desc" translatable="false">Navigation header</string>
 
     <string name="set_couples_attendance">Set attendance</string>
     <string name="report_attendance">Report attendance</string>
@@ -17,35 +11,26 @@
     <string name="setting_group">Setting group</string>
     <string name="about">About</string>
 
-    <!--String visit status-->
-    <string name="np">НП</string>
-    <string name="hv">ХВ</string>
-    <string name="zap">ЗАП</string>
-    <string name="v">В</string>
-    <string name="vidp">ВІДП</string>
-    <string name="ch">Ч</string>
     <string name="you_not_member_group">You are not a member of any group</string>
     <string name="setting">Setting</string>
     <string name="logout">Logout</string>
     <string name="students">Students</string>
     <string name="types_missing">Types of missing</string>
-    <string name="enter_name_group">Enter name group</string>
+    <string name="enter_name_group">Enter group name</string>
     <string name="cancel">Cancel</string>
     <string name="save">Save</string>
 
-    <string-array name="spinner_visit_status">
-        <item>@string/np</item>
-        <item>@string/hv</item>
-        <item>@string/zap</item>
-        <item>@string/v</item>
-        <item>@string/vidp</item>
-        <item>@string/ch</item>
-    </string-array>
-    <string name="title_activity_setting_students">SettingStudentsActivity</string>
     <string name="enter_last_name">Enter last name</string>
     <string name="enter_first_name">Enter first name</string>
-    <string name="enter_full_name">Enter full name type</string>
-    <string name="enter_short_name">Enter short name type</string>
+    <string name="enter_full_name">Enter type full name</string>
+    <string name="enter_short_name">Enter type short name</string>
     <string name="enter_user_link">Enter user link</string>
+    <string name="not_set">Not set</string>
+    <string name="add_type">Add type</string>
+    <string name="add_student">Add student</string>
+    <string name="student_added">Student added</string>
+    <string name="type_added">Type added</string>
+    <string name="user_id">User ID: %1$s</string>
+    <string name="username">Username: %1$s</string>
 
 </resources>

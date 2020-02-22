@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Journal</string>
+    <string name="cancel">Скасувати</string>
+    <string name="enter_first_name">Введіть ім’я</string>
+    <string name="enter_last_name">Введіть прізвище</string>
+    <string name="enter_name_group">Введіть назву групи</string>
+    <string name="enter_user_link">Введіть посилання користувача</string>
+    <string name="logout">Вийти</string>
+    <string name="save">Зберегти</string>
+    <string name="students">Студенти</string>
+    <string name="types_missing">Типи пропусків</string>
+    <string name="you_not_member_group">Ви не є членом жодної групи</string>
+    <string name="setting_group">Налаштування групи</string>
+    <string name="set_couples_attendance">Установити відвідуваність</string>
+    <string name="set_reason_for_missing">Установити причини пропусків</string>
+    <string name="report_attendance">Звіт відвідування</string>
+    <string name="enter_short_name">Введіть коротке ім\'я типу</string>
+    <string name="enter_full_name">Введіть повне ім\'я типу</string>
+    <string name="about">О застосунку</string>
+    <string name="setting">Налаштування</string>
+    <string name="not_set">Не встановлено</string>
+    <string name="add_student">Додати студента</string>
+    <string name="add_type">Додати вид пропуску</string>
+    <string name="student_added">Студента додано</string>
+    <string name="type_added">Вид пропуску додано</string>
+    <string name="user_id">ID користувача: %1$s</string>
+    <string name="username">Username: %1$s</string>
+</resources>

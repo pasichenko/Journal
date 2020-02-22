@@ -77,11 +77,11 @@ public class AddTypeDialog extends DialogFragment {
             Toast.makeText(mContext, "Oops, no group", Toast.LENGTH_SHORT).show();
             dismiss();
         }
-        builder.setTitle("Add student");
+        builder.setTitle(R.string.add_type);
         builder.setView(mRootView);
         builder.setPositiveButton("OK", (dialogInterface, i) -> {
             addType();
-            Toast.makeText(mContext, "Student added", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, R.string.type_added, Toast.LENGTH_SHORT).show();
             dismiss();
         });
         builder.setNegativeButton(R.string.cancel, null);

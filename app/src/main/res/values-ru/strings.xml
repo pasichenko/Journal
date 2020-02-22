@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Journal</string>
+    <string name="logout">Выйти</string>
+    <string name="not_set">Не установлено</string>
+    <string name="report_attendance">Отчет посещаемости</string>
+    <string name="save">Соохранить</string>
+    <string name="set_couples_attendance">Установка посещаемости</string>
+    <string name="set_reason_for_missing">Установка причин пропусков</string>
+    <string name="setting">Настройки</string>
+    <string name="setting_group">Настройки группы</string>
+    <string name="students">Студенты</string>
+    <string name="types_missing">Причины пропусков</string>
+    <string name="you_not_member_group">Вы не являетесь участником ни одной группы</string>
+    <string name="about">О приложении</string>
+    <string name="cancel">Отмена</string>
+    <string name="enter_first_name">Введите имя</string>
+    <string name="enter_full_name">Введите полное название типа</string>
+    <string name="enter_last_name">Введите фамилию</string>
+    <string name="enter_name_group">Введите имя группы</string>
+    <string name="enter_short_name">Введите короткое название типа</string>
+    <string name="enter_user_link">Введите ссылку на пользователя</string>
+    <string name="add_student">Добавить студента</string>
+    <string name="add_type">Добавить вид пропуска</string>
+    <string name="student_added">Студент добавлен</string>
+    <string name="type_added">Тип пропуска добавлен</string>
+    <string name="user_id">ID пользователя: %1$s</string>
+    <string name="username">Username: %1$s</string>
+</resources>

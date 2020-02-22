@@ -82,7 +82,7 @@ public class AddStudentDialog extends DialogFragment {
             Toast.makeText(mContext, "Oops, no group", Toast.LENGTH_SHORT).show();
             dismiss();
         }
-        builder.setTitle("Add student");
+        builder.setTitle(R.string.add_student);
         builder.setView(mRootView);
         builder.setPositiveButton("OK", (dialogInterface, i) -> addStudent());
         builder.setNegativeButton(R.string.cancel, null);
@@ -165,7 +165,7 @@ public class AddStudentDialog extends DialogFragment {
             Student student = createStudent();
             writeInStudentsReference(student);
             writeInMissingsReference(student);
-            Toast.makeText(mContext, "Student added", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, R.string.student_added, Toast.LENGTH_SHORT).show();
             dismiss();
         }
     }

@@ -156,7 +156,7 @@ public class StudentReportAdapter extends RecyclerView.Adapter<StudentReportAdap
                     statusChip.setText(missing.type_missing.short_name_type);
                 } else {
                     setVisibilityStatusChip(true);
-                    statusChip.setText("Not set");
+                    statusChip.setText(R.string.not_set);
                 }
             }
 
