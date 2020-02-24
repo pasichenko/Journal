@@ -24,13 +24,17 @@
             android:name=".activities.SettingGroupActivity"
             android:label="@string/setting_group"
             android:theme="@style/AppThemeMaterial" />
-        <activity android:name=".activities.StartGroupActivity" />
+        <activity
+            android:name=".activities.StartGroupActivity"
+            android:theme="@style/AppThemeMaterial" />
         <activity
             android:name=".activities.MainActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeMaterial.NoActionBar" />
-        <activity android:name=".activities.SignInActivity">
+        <activity
+            android:name=".activities.SignInActivity"
+            android:theme="@style/AppThemeMaterial.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

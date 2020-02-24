@@ -26,4 +26,10 @@
     <string name="type_added">Вид пропуску додано</string>
     <string name="user_id">ID користувача: %1$s</string>
     <string name="username">Username: %1$s</string>
+    <string name="create_group">Стоворити групу</string>
+    <string name="join_to_group">Приєднатися до групи</string>
+    <string name="copy_code">Скопіювати</string>
+    <string name="message_send_code">Надішліть цей код власнику групи\n%1$s</string>
+    <string name="send_code">Надіслати</string>
+
 </resources>

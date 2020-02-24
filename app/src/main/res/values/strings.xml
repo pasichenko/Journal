@@ -32,5 +32,11 @@
     <string name="type_added">Type added</string>
     <string name="user_id">User ID: %1$s</string>
     <string name="username">Username: %1$s</string>
+    <string name="create_group">Create group</string>
+    <string name="join_to_group">Join to group</string>
+    <string name="send_code">Send code</string>
+    <string name="copy_code">Copy code</string>
+    <string name="message_send_code">Please send this code to group owner\n%1$s</string>
+
 
 </resources>

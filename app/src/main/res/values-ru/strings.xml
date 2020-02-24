@@ -26,4 +26,10 @@
     <string name="type_added">Тип пропуска добавлен</string>
     <string name="user_id">ID пользователя: %1$s</string>
     <string name="username">Username: %1$s</string>
+    <string name="create_group">Создать группу</string>
+    <string name="join_to_group">Присоединиться к группе</string>
+    <string name="copy_code">Скопировать</string>
+    <string name="message_send_code">Пожалуйста, отправьте этот код владельцу группы\n%1$s</string>
+    <string name="send_code">Отправить</string>
+
 </resources>
