@@ -109,7 +109,7 @@ public class SignInActivity extends BaseActivity {
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
         Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
         showProgressBar();
-
+        signInButton.setEnabled(false);
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, task -> {
@@ -123,6 +123,7 @@ public class SignInActivity extends BaseActivity {
                     }
 
                     hideProgressBar();
+                    signInButton.setEnabled(true);
                 });
     }
 
@@ -135,6 +136,7 @@ public class SignInActivity extends BaseActivity {
         String username = usernameFromEmail(user.getEmail());
         writeNewUser(user.getUid(), username, user.getEmail());
         showProgressBar();
+        signInButton.setEnabled(false);
         mRootReference.child(App.KEY_USER_GROUP).child(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -164,6 +166,7 @@ public class SignInActivity extends BaseActivity {
                     finish();
                 }
                 hideProgressBar();
+                signInButton.setEnabled(true);
             }
 
             @Override

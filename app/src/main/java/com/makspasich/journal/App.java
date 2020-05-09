@@ -2,6 +2,13 @@ package com.makspasich.journal;
 
 import android.app.Application;
 
+import com.makspasich.journal.data.model.Group;
+import com.makspasich.journal.data.model.Student;
+import com.makspasich.journal.data.model.User;
+
+import java.util.Calendar;
+import java.util.Date;
+
 public class App extends Application {
     public static final String URL_CREATE_GROUP = "http://google.com";
 
@@ -19,22 +26,85 @@ public class App extends Application {
     public static final String KEY_TYPES_MISSING = "types_missing";
     public static final String KEY_USERS = "users";
 
-    private String keyGroup;
+    public static final String DATE_FORMAT = "yyyy-MM-dd";
+
+    private String sessionKeyGroup = null;
+    private Group sessionGroup = null;
+    private String keyStudent = null;
+    private Student student = null;
+    private String keyUser = null;
+    private User user = null;
+    private Date selectedDay = null;
+
 
     @Override
     public void onCreate() {
         super.onCreate();
+        Date date = Calendar.getInstance().getTime();
+        this.selectedDay = date;
 //        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         instance = this;
     }
 
     public String getKeyGroup() {
-        return keyGroup;
+        return sessionKeyGroup;
     }
 
-    private App instance;
+    public void setKeyGroup(String keyGroup) {
+        this.sessionKeyGroup = keyGroup;
+    }
 
-    public App getInstance(){
+    public Date getSelectedDay() {
+        return selectedDay;
+    }
+
+    public void setSelectedDay(Date selectedDay) {
+        this.selectedDay = selectedDay;
+    }
+
+    public Group getGroup() {
+        return sessionGroup;
+    }
+
+    public void setGroup(Group group) {
+        this.sessionGroup = group;
+    }
+
+    public String getKeyStudent() {
+        return keyStudent;
+    }
+
+    public void setKeyStudent(String keyStudent) {
+        this.keyStudent = keyStudent;
+    }
+
+    public Student getStudent() {
+        return student;
+    }
+
+    public void setStudent(Student student) {
+        this.student = student;
+    }
+
+    public String getKeyUser() {
+        return keyUser;
+    }
+
+    public void setKeyUser(String keyUser) {
+        this.keyUser = keyUser;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    private static App instance;
+
+    public static App getInstance() {
         return instance;
     }
 }

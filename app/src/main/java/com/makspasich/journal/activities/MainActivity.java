@@ -19,7 +19,7 @@ import androidx.fragment.app.Fragment;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
@@ -38,6 +38,9 @@ import com.makspasich.journal.fragments.SetReason.SetReasonMissingFragment;
 import com.makspasich.journal.fragments.StudentReportFragment;
 import com.squareup.picasso.Picasso;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -55,7 +58,7 @@ public class MainActivity extends AppCompatActivity
     @BindView(R.id.drawer_layout)
     protected DrawerLayout drawer;
     @BindView(R.id.fab)
-    protected FloatingActionButton fab;
+    protected ExtendedFloatingActionButton fab;
     @BindView(R.id.toolbar)
     protected Toolbar toolbar;
     @BindView(R.id.nav_view)
@@ -66,11 +69,18 @@ public class MainActivity extends AppCompatActivity
 
     private String mKeyGroup;
     private String mKeyStudent;
+    private String mDate;
     private boolean isHeadOfGroup = false;
+    private Date currentDate;
+    private SimpleDateFormat formatter = new SimpleDateFormat(App.DATE_FORMAT);
 
     public MainActivity() {
         mAuth = FirebaseAuth.getInstance();
         mRootReference = FirebaseDatabase.getInstance().getReference();
+        mKeyGroup = App.getInstance().getKeyGroup();
+        mKeyStudent = App.getInstance().getKeyStudent();
+        currentDate = App.getInstance().getSelectedDay();
+        mDate = formatter.format(currentDate);
     }
 
     @Override
@@ -85,6 +95,7 @@ public class MainActivity extends AppCompatActivity
         mKeyStudent = getIntent().getStringExtra(SignInActivity.KEY_STUDENT);
         setSupportActionBar(toolbar);
 
+        fab.setText(mDate);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
@@ -164,14 +175,13 @@ public class MainActivity extends AppCompatActivity
         } else if (itemSelectedId == R.id.set_reason_for_missing) {
             replaceFragment(new SetReasonMissingFragment(mKeyGroup), itemSelectedId);
         } else if (itemSelectedId == R.id.report_attendance) {
-            if (isHeadOfGroup){
-            replaceFragment(new ReportAttendanceFragment(mKeyGroup), itemSelectedId);
-            }else{
-            replaceFragment(new StudentReportFragment(mKeyGroup, mKeyStudent), itemSelectedId);
+            if (isHeadOfGroup) {
+                replaceFragment(new ReportAttendanceFragment(mKeyGroup), itemSelectedId);
+            } else {
+                replaceFragment(new StudentReportFragment(mKeyGroup, mKeyStudent), itemSelectedId);
             }
         } else if (itemSelectedId == R.id.setting_group) {
             Intent intent = new Intent(MainActivity.this, SettingGroupActivity.class);
-            intent.putExtra(SignInActivity.KEY_GROUP, mKeyGroup);
             startActivity(intent);
         } else if (itemSelectedId == R.id.nav_logout) {
             mAuth.signOut();
