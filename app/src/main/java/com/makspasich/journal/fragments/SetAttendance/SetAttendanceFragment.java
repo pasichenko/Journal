@@ -18,10 +18,6 @@ import androidx.viewpager.widget.ViewPager;
 import com.google.android.material.tabs.TabLayout;
 import com.makspasich.journal.R;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -38,14 +34,9 @@ public class SetAttendanceFragment extends Fragment {
     protected ViewPager mViewPager;
     //endregion
 
-    private String mKeyGroup;
-    private String mDate;
 
-    public SetAttendanceFragment(String mKeyGroup) {
-        this.mKeyGroup = mKeyGroup;
-        Date currentTime = Calendar.getInstance().getTime();
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-        mDate = formatter.format(currentTime);
+    public SetAttendanceFragment() {
+
     }
 
     @Nullable
@@ -91,7 +82,7 @@ public class SetAttendanceFragment extends Fragment {
         @NonNull
         @Override
         public Fragment getItem(int position) {
-            return ListAttendanceFragment.newInstance(mKeyGroup, mDate, position + 1);
+            return ListAttendanceFragment.newInstance(position + 1);
         }
 
         @Override

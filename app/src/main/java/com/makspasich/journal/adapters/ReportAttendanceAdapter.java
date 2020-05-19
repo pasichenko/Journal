@@ -19,6 +19,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.makspasich.journal.R;
 import com.makspasich.journal.data.model.Missing;
+import com.makspasich.journal.data.model.StatusMissing;
 import com.makspasich.journal.data.model.Student;
 import com.makspasich.journal.data.model.TypeMissing;
 
@@ -40,13 +41,11 @@ public class ReportAttendanceAdapter extends RecyclerView.Adapter<ReportAttendan
     private List<List<String>> mMissingIds = new ArrayList<>();
     private List<List<Missing>> mMissingsByStudent = new ArrayList<>();
     private List<TypeMissing> mTypes;
-    private String mKeyGroup;
 
-    public ReportAttendanceAdapter(final Context context, DatabaseReference ref, List<TypeMissing> types, String mKeyGroup) {
+    public ReportAttendanceAdapter(final Context context, DatabaseReference ref, List<TypeMissing> types) {
         mContext = context;
         mReasonReference = ref;
         this.mTypes = types;
-        this.mKeyGroup = mKeyGroup;
 
         // Create child event listener
         ChildEventListener childEventListener = new ChildEventListener() {
@@ -217,7 +216,7 @@ public class ReportAttendanceAdapter extends RecyclerView.Adapter<ReportAttendan
                 } else if (missing.number_pair == 6) {
                     changeBackgroundMissing(sixCoupleTextView, missing);
                 }
-                if (missing.is_missing.equals("absent")) {
+                if (missing.is_missing == StatusMissing.ABSENT) {
                     isMissedAnyCouple = true;
                 }
                 if (missing.type_missing != null) {
@@ -242,11 +241,11 @@ public class ReportAttendanceAdapter extends RecyclerView.Adapter<ReportAttendan
         private void changeBackgroundMissing(TextView view, Missing missing) {
             view.setText(String.valueOf(missing.number_pair));
 
-            if (missing.is_missing.equals("present")) {
+            if (missing.is_missing == StatusMissing.PRESENT) {
                 view.setBackgroundResource(R.drawable.border_present_student);
-            } else if (missing.is_missing.equals("absent")) {
+            } else if (missing.is_missing == StatusMissing.ABSENT) {
                 view.setBackgroundResource(R.drawable.border_absent_student);
-            } else if (missing.is_missing.equals("null")) {
+            } else if (missing.is_missing == StatusMissing.NULL) {
                 view.setBackgroundResource(R.drawable.border_null);
             }
 

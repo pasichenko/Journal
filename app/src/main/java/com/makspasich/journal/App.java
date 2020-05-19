@@ -6,6 +6,7 @@ import com.makspasich.journal.data.model.Group;
 import com.makspasich.journal.data.model.Student;
 import com.makspasich.journal.data.model.User;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -26,7 +27,7 @@ public class App extends Application {
     public static final String KEY_TYPES_MISSING = "types_missing";
     public static final String KEY_USERS = "users";
 
-    public static final String DATE_FORMAT = "yyyy-MM-dd";
+    private static final String DATE_FORMAT = "yyyy-MM-dd";
 
     private String sessionKeyGroup = null;
     private Group sessionGroup = null;
@@ -34,14 +35,13 @@ public class App extends Application {
     private Student student = null;
     private String keyUser = null;
     private User user = null;
-    private Date selectedDay = null;
+    private Date selectedDate = null;
 
 
     @Override
     public void onCreate() {
         super.onCreate();
-        Date date = Calendar.getInstance().getTime();
-        this.selectedDay = date;
+        this.selectedDate = Calendar.getInstance().getTime();
 //        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         instance = this;
     }
@@ -54,12 +54,17 @@ public class App extends Application {
         this.sessionKeyGroup = keyGroup;
     }
 
-    public Date getSelectedDay() {
-        return selectedDay;
+    public Date getSelectedDate() {
+        return selectedDate;
     }
 
-    public void setSelectedDay(Date selectedDay) {
-        this.selectedDay = selectedDay;
+    public String getSelectedDateString() {
+        SimpleDateFormat formatter = new SimpleDateFormat(App.DATE_FORMAT);
+        return formatter.format(selectedDate);
+    }
+
+    public void setSelectedDate(Date selectedDate) {
+        this.selectedDate = selectedDate;
     }
 
     public Group getGroup() {

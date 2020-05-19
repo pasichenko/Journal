@@ -20,10 +20,6 @@ import com.makspasich.journal.App;
 import com.makspasich.journal.R;
 import com.makspasich.journal.adapters.StudentReportAdapter;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -42,16 +38,8 @@ public class StudentReportFragment extends Fragment {
     //endregion
 
     private StudentReportAdapter mAdapter;
-    private String mKeyGroup;
-    private String mKeyStudent;
-    private String mDate;
 
-    public StudentReportFragment(String mKeyGroup, String mKeyStudent) {
-        this.mKeyGroup = mKeyGroup;
-        this.mKeyStudent = mKeyStudent;
-        Date currentTime = Calendar.getInstance().getTime();
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-        mDate = formatter.format(currentTime);
+    public StudentReportFragment() {
         this.mRootReference = FirebaseDatabase.getInstance().getReference();
     }
 
@@ -64,9 +52,9 @@ public class StudentReportFragment extends Fragment {
         setHasOptionsMenu(true);
 
         mReportReference = mRootReference.child(App.KEY_GROUP_STUDENT_DAY_MISSINGS)
-                .child(mKeyGroup)
-                .child(mKeyStudent)
-                .child(mDate)
+                .child(App.getInstance().getKeyGroup())
+                .child(App.getInstance().getKeyStudent())
+                .child(App.getInstance().getSelectedDateString())
                 .child("missings");
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));

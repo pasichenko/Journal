@@ -26,7 +26,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.Query;
 import com.makspasich.journal.R;
 import com.makspasich.journal.activities.SettingStudentsActivity;
-import com.makspasich.journal.activities.SignInActivity;
 import com.makspasich.journal.data.model.Student;
 import com.makspasich.journal.data.model.User;
 import com.makspasich.journal.dialogs.LinkedStudentDialog;
@@ -46,12 +45,11 @@ public class SettingStudentAdapter extends RecyclerView.Adapter<SettingStudentAd
     private List<String> mStudentIds = new ArrayList<>();
     private List<Student> mStudents = new ArrayList<>();
 
-    private final String mKeyGroup;
 
-    public SettingStudentAdapter(final Context context, Query query, String keyGroup) {
+
+    public SettingStudentAdapter(final Context context, Query query) {
         mContext = context;
         mQuery = query;
-        this.mKeyGroup = keyGroup;
 
         // Create child event listener
         ChildEventListener childEventListener = new ChildEventListener() {
@@ -227,7 +225,6 @@ public class SettingStudentAdapter extends RecyclerView.Adapter<SettingStudentAd
             linkUserButton.setOnClickListener(v -> {
                 LinkedStudentDialog custom = new LinkedStudentDialog(mContext);
                 Bundle arg = new Bundle();
-                arg.putString(SignInActivity.KEY_GROUP, mKeyGroup);
                 arg.putString("KEY_STUDENT", student.id_student);
                 custom.setArguments(arg);
                 custom.show(((SettingStudentsActivity) mContext).getSupportFragmentManager(), "");

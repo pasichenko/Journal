@@ -24,10 +24,7 @@ import com.makspasich.journal.R;
 import com.makspasich.journal.adapters.ReportAttendanceAdapter;
 import com.makspasich.journal.data.model.TypeMissing;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
@@ -48,14 +45,9 @@ public class ReportAttendanceFragment extends Fragment {
     //endregion
 
     private ReportAttendanceAdapter mAdapter;
-    private String mKeyGroup;
-    private String mDate;
 
-    public ReportAttendanceFragment(String mKeyGroup) {
-        this.mKeyGroup = mKeyGroup;
-        Date currentTime = Calendar.getInstance().getTime();
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-        mDate = formatter.format(currentTime);
+
+    public ReportAttendanceFragment() {
         this.mRootReference = FirebaseDatabase.getInstance().getReference();
     }
 
@@ -68,8 +60,8 @@ public class ReportAttendanceFragment extends Fragment {
         setHasOptionsMenu(true);
 
         mReasonReference = mRootReference.child(App.KEY_GROUP_DAY_STUDENT_MISSINGS)
-                .child(mKeyGroup)
-                .child(mDate);
+                .child(App.getInstance().getKeyGroup())
+                .child(App.getInstance().getSelectedDateString());
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         return mRootView;
@@ -78,7 +70,8 @@ public class ReportAttendanceFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        mRootReference.child(App.KEY_GROUP_TYPES_MISSING).child(mKeyGroup).addListenerForSingleValueEvent(new ValueEventListener() {
+        mRootReference.child(App.KEY_GROUP_TYPES_MISSING)
+                .child(App.getInstance().getKeyGroup()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 List<TypeMissing> types = new ArrayList<>();
@@ -86,9 +79,8 @@ public class ReportAttendanceFragment extends Fragment {
                     TypeMissing type = typeSnapshot.getValue(TypeMissing.class);
                     types.add(type);
                 }
-                mAdapter = new ReportAttendanceAdapter(getContext(), mReasonReference, types, mKeyGroup);
+                mAdapter = new ReportAttendanceAdapter(getContext(), mReasonReference, types);
                 mRecyclerView.setAdapter(mAdapter);
-
             }
 
             @Override

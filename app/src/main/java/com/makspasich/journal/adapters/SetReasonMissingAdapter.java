@@ -20,6 +20,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.makspasich.journal.R;
 import com.makspasich.journal.data.model.Missing;
+import com.makspasich.journal.data.model.StatusMissing;
 import com.makspasich.journal.data.model.Student;
 import com.makspasich.journal.data.model.TypeMissing;
 import com.makspasich.journal.data.utils.FirebaseDB;
@@ -42,13 +43,11 @@ public class SetReasonMissingAdapter extends RecyclerView.Adapter<SetReasonMissi
     private List<List<String>> mMissingIds = new ArrayList<>();
     private List<List<Missing>> mMissingsByStudent = new ArrayList<>();
     private List<TypeMissing> mTypes;
-    private String mKeyGroup;
 
-    public SetReasonMissingAdapter(final Context context, DatabaseReference ref, List<TypeMissing> types, String mKeyGroup) {
+    public SetReasonMissingAdapter(final Context context, DatabaseReference ref, List<TypeMissing> types) {
         mContext = context;
         mReasonReference = ref;
         this.mTypes = types;
-        this.mKeyGroup = mKeyGroup;
 
         // Create child event listener
         ChildEventListener childEventListener = new ChildEventListener() {
@@ -230,7 +229,7 @@ public class SetReasonMissingAdapter extends RecyclerView.Adapter<SetReasonMissi
                 } else if (missing.number_pair == 6) {
                     changeBackgroundMissing(sixCoupleTextView, missing);
                 }
-                if (missing.is_missing.equals("absent")) {
+                if (missing.is_missing == StatusMissing.ABSENT) {
                     isMissedAnyCouple = true;
                 }
                 if (missing.type_missing != null) {
@@ -248,7 +247,7 @@ public class SetReasonMissingAdapter extends RecyclerView.Adapter<SetReasonMissi
                     typesMissingChipGroup.setVisibility(View.VISIBLE);
                     setVisibilityStatusChip(false);
                 }
-            }else {
+            } else {
                 typesMissingChipGroup.setVisibility(View.GONE);
                 setVisibilityStatusChip(false);
             }
@@ -263,14 +262,14 @@ public class SetReasonMissingAdapter extends RecyclerView.Adapter<SetReasonMissi
                 for (Missing missing : listMissing) {
                     String keyMissing = missingsIds.get(listMissing.indexOf(missing));
                     String keyStudent = mStudentIds.get(getAdapterPosition());
-                    FirebaseDB.updateTypeMissingInDB(mKeyGroup, missing.date, missing.number_pair, keyMissing, keyStudent, null);
+                    FirebaseDB.updateTypeMissingInDB(missing.number_pair, keyMissing, keyStudent, null);
                 }
             } else {
                 for (Missing missing : listMissing) {
-                    if (missing.is_missing.equals("absent")) {
+                    if (missing.is_missing == StatusMissing.ABSENT) {
                         String keyMissing = missingsIds.get(listMissing.indexOf(missing));
                         String keyStudent = mStudentIds.get(getAdapterPosition());
-                        FirebaseDB.updateTypeMissingInDB(mKeyGroup, missing.date, missing.number_pair, keyMissing, keyStudent, type);
+                        FirebaseDB.updateTypeMissingInDB(missing.number_pair, keyMissing, keyStudent, type);
                     }
                 }
                 statusChip.setText(type.short_name_type);
@@ -280,11 +279,11 @@ public class SetReasonMissingAdapter extends RecyclerView.Adapter<SetReasonMissi
         private void changeBackgroundMissing(TextView view, Missing missing) {
             view.setText(String.valueOf(missing.number_pair));
 
-            if (missing.is_missing.equals("present")) {
+            if (missing.is_missing == StatusMissing.PRESENT) {
                 view.setBackgroundResource(R.drawable.border_present_student);
-            } else if (missing.is_missing.equals("absent")) {
+            } else if (missing.is_missing == StatusMissing.ABSENT) {
                 view.setBackgroundResource(R.drawable.border_absent_student);
-            } else if (missing.is_missing.equals("null")) {
+            } else if (missing.is_missing == StatusMissing.NULL) {
                 view.setBackgroundResource(R.drawable.border_null);
             }
 

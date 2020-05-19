@@ -36,7 +36,6 @@ public class SettingStudentsActivity extends AppCompatActivity {
     //endregion
 
     private SettingStudentAdapter mAdapter;
-    private String mKeyGroup;
 
     public SettingStudentsActivity() {
         mAuth = FirebaseAuth.getInstance();
@@ -51,13 +50,9 @@ public class SettingStudentsActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        mKeyGroup = getIntent().getStringExtra(SignInActivity.KEY_GROUP);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mAddStudentFAB.setOnClickListener(v -> {
             AddStudentDialog custom = new AddStudentDialog(this);
-            Bundle arg = new Bundle();
-            arg.putString(SignInActivity.KEY_GROUP, mKeyGroup);
-            custom.setArguments(arg);
             custom.show(getSupportFragmentManager(), "");
         });
     }
@@ -65,8 +60,8 @@ public class SettingStudentsActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
-        Query attendanceQuery = mRootReference.child(App.KEY_GROUP_STUDENTS).child(mKeyGroup).orderByChild("last_name");
-        mAdapter = new SettingStudentAdapter(this, attendanceQuery, mKeyGroup);
+        Query attendanceQuery = mRootReference.child(App.KEY_GROUP_STUDENTS).child(App.getInstance().getKeyGroup()).orderByChild("last_name");
+        mAdapter = new SettingStudentAdapter(this, attendanceQuery);
         mRecyclerView.setAdapter(mAdapter);
     }
 

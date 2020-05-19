@@ -21,6 +21,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 import com.makspasich.journal.R;
 import com.makspasich.journal.data.model.Missing;
+import com.makspasich.journal.data.model.StatusMissing;
 import com.makspasich.journal.data.utils.FirebaseDB;
 
 import java.util.ArrayList;
@@ -39,12 +40,9 @@ public class SetAttendanceAdapter extends RecyclerView.Adapter<SetAttendanceAdap
     private List<String> mMissingIds = new ArrayList<>();
     private List<Missing> mMissings = new ArrayList<>();
 
-    private final String mKeyGroup;
-
-    public SetAttendanceAdapter(final Context context, DatabaseReference ref, String keyGroup) {
+    public SetAttendanceAdapter(final Context context, DatabaseReference ref) {
         mContext = context;
         mMissingCoupleReference = ref;
-        mKeyGroup = keyGroup;
         Query attendanceQuery = mMissingCoupleReference.orderByChild("student/last_name");
 
         // Create child event listener
@@ -186,9 +184,9 @@ public class SetAttendanceAdapter extends RecyclerView.Adapter<SetAttendanceAdap
             trueButton.setBackgroundResource(R.drawable.ic_check_24dp);
             falseButton.setBackgroundResource(R.drawable.ic_close_24dp);
             cancelButton.setBackgroundResource(R.drawable.ic_cancel);
-            trueButton.setOnClickListener(view -> updateMissing("present"));
-            falseButton.setOnClickListener(view -> updateMissing("absent"));
-            cancelButton.setOnClickListener(view -> updateMissing("null"));
+            trueButton.setOnClickListener(view -> updateMissing(StatusMissing.PRESENT));
+            falseButton.setOnClickListener(view -> updateMissing(StatusMissing.ABSENT));
+            cancelButton.setOnClickListener(view -> updateMissing(StatusMissing.NULL));
         }
 
         void bind(String keyMissing, Missing missing) {
@@ -196,22 +194,22 @@ public class SetAttendanceAdapter extends RecyclerView.Adapter<SetAttendanceAdap
             this.missing = missing;
             String fio = missing.student.last_name + " " + missing.student.first_name;
             personName.setText(fio);
-            if (missing.is_missing.equals("null")) {
+            if (missing.is_missing == StatusMissing.NULL) {
                 manageAttendance.setVisibility(View.VISIBLE);
                 cancelButton.setVisibility(View.GONE);
             } else {
                 manageAttendance.setVisibility(View.GONE);
                 cancelButton.setVisibility(View.VISIBLE);
             }
-            if (missing.is_missing.equals("present")) {
+            if (missing.is_missing == StatusMissing.PRESENT) {
                 container.setBackgroundResource(R.color.present_student);
-            } else if (missing.is_missing.equals("absent")) {
+            } else if (missing.is_missing == StatusMissing.ABSENT) {
                 container.setBackgroundResource(R.color.absent_student);
             }
         }
 
-        void updateMissing(String status) {
-            FirebaseDB.updateStatusMissingInDB(mKeyGroup,missing.date,missing.number_pair,keyMissing,missing.student.id_student,status);
+        void updateMissing(StatusMissing status) {
+            FirebaseDB.updateStatusMissingInDB(missing.number_pair, keyMissing, missing.student.id_student, status);
         }
     }
 }

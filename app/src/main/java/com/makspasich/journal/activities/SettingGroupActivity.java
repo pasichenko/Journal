@@ -48,12 +48,10 @@ public class SettingGroupActivity extends AppCompatActivity {
     @BindView(R.id.container_view_list_types_missing)
     MaterialCardView containerViewTypesMissing;
 
-    GroupNameViewHolder mGroupNameViewHolder;
-    StudentsViewHolder mStudentsViewHolder;
-    TypeMissingViewHolder mTypeMissingViewHolder;
+    private GroupNameViewHolder mGroupNameViewHolder;
+    private StudentsViewHolder mStudentsViewHolder;
+    private TypeMissingViewHolder mTypeMissingViewHolder;
     //endregion
-
-    private String mKeyGroup;
 
     public SettingGroupActivity() {
         mAuth = FirebaseAuth.getInstance();
@@ -66,8 +64,6 @@ public class SettingGroupActivity extends AppCompatActivity {
         setContentView(R.layout.activity_setting_group);
         mUnbinder = ButterKnife.bind(this);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        mKeyGroup = getIntent().getStringExtra(SignInActivity.KEY_GROUP);
 
         mGroupNameViewHolder = new GroupNameViewHolder(containerViewGroupName);
         mStudentsViewHolder = new StudentsViewHolder(containerViewListStudent);
@@ -127,7 +123,7 @@ public class SettingGroupActivity extends AppCompatActivity {
                     hideExpandableView();
                 }
             });
-            mRootReference.child(App.KEY_GROUPS).child(mKeyGroup).addValueEventListener(getNameGroup);
+            mRootReference.child(App.KEY_GROUPS).child(App.getInstance().getKeyGroup()).addValueEventListener(getNameGroup);
             saveActionButton.setOnClickListener(view ->
                     //TODO: implementing change last first name student
                     Toast.makeText(getBaseContext(), "This functionality in progress", Toast.LENGTH_SHORT).show());
@@ -171,18 +167,16 @@ public class SettingGroupActivity extends AppCompatActivity {
         Button checkStudentListButton;
         //endregion
 
-        public StudentsViewHolder(ViewGroup container) {
+        StudentsViewHolder(ViewGroup container) {
             ButterKnife.bind(this, container);
             this.container = container;
             checkStudentListButton.setBackgroundResource(R.drawable.ic_eye);
             checkStudentListButton.setOnClickListener(v -> {
                 Intent intent = new Intent(SettingGroupActivity.this, SettingStudentsActivity.class);
-                intent.putExtra(SignInActivity.KEY_GROUP, mKeyGroup);
                 startActivity(intent);
             });
             this.container.setOnClickListener(v -> {
                 Intent intent = new Intent(SettingGroupActivity.this, SettingStudentsActivity.class);
-                intent.putExtra(SignInActivity.KEY_GROUP, mKeyGroup);
                 startActivity(intent);
             });
         }
@@ -198,18 +192,16 @@ public class SettingGroupActivity extends AppCompatActivity {
         Button checkStudentListButton;
         //endregion
 
-        public TypeMissingViewHolder(ViewGroup container) {
+        TypeMissingViewHolder(ViewGroup container) {
             ButterKnife.bind(this, container);
             this.container = container;
             checkStudentListButton.setBackgroundResource(R.drawable.ic_eye);
             checkStudentListButton.setOnClickListener(v -> {
                 Intent intent = new Intent(SettingGroupActivity.this, SettingTypesMissingActivity.class);
-                intent.putExtra(SignInActivity.KEY_GROUP, mKeyGroup);
                 startActivity(intent);
             });
             this.container.setOnClickListener(v -> {
                 Intent intent = new Intent(SettingGroupActivity.this, SettingTypesMissingActivity.class);
-                intent.putExtra(SignInActivity.KEY_GROUP, mKeyGroup);
                 startActivity(intent);
             });
         }

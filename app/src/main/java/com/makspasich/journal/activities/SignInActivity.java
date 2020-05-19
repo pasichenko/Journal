@@ -37,8 +37,6 @@ public class SignInActivity extends BaseActivity {
     private Unbinder mUnbinder;
 
     private static final int RC_SIGN_IN = 9001;
-    public static final String KEY_GROUP = "key_group";
-    public static final String KEY_STUDENT = "key_student";
     private final FirebaseAuth mAuth;
     private final DatabaseReference mRootReference;
     private GoogleSignInClient mGoogleSignInClient;
@@ -140,24 +138,22 @@ public class SignInActivity extends BaseActivity {
         mRootReference.child(App.KEY_USER_GROUP).child(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                String keyGroup = null;
-                String keyStudent = null;
                 boolean isFound = false;
                 for (DataSnapshot variableSnapshot : dataSnapshot.getChildren()) {
 
                     if (variableSnapshot.getKey().equals("key_group")) {
-                        keyGroup = (String) variableSnapshot.getValue();
+                        String keyGroup = (String) variableSnapshot.getValue();
+                        App.getInstance().setKeyGroup(keyGroup);
                     }
                     if (variableSnapshot.getKey().equals("key_student")) {
-                        keyStudent = (String) variableSnapshot.getValue();
+                        String keyStudent = (String) variableSnapshot.getValue();
+                        App.getInstance().setKeyStudent(keyStudent);
                         isFound = true;
                     }
 
                 }
                 if (isFound) {
                     Intent intent = new Intent(SignInActivity.this, MainActivity.class);
-                    intent.putExtra(KEY_GROUP, keyGroup);
-                    intent.putExtra(KEY_STUDENT, keyStudent);
                     startActivity(intent);
                     finish();
                 } else {

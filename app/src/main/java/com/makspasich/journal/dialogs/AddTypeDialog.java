@@ -23,7 +23,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.makspasich.journal.App;
 import com.makspasich.journal.R;
-import com.makspasich.journal.activities.SignInActivity;
 import com.makspasich.journal.data.model.TypeMissing;
 
 import java.util.Objects;
@@ -54,8 +53,6 @@ public class AddTypeDialog extends DialogFragment {
     TextInputEditText shortNameEditText;
     //endregion
 
-    private String mKeyGroup;
-
     public AddTypeDialog(Context context) {
         this.mContext = context;
         mAuth = FirebaseAuth.getInstance();
@@ -70,13 +67,6 @@ public class AddTypeDialog extends DialogFragment {
         LayoutInflater inflater = Objects.requireNonNull(getActivity()).getLayoutInflater();
         mRootView = inflater.inflate(R.layout.add_type_dialog, null);
         mUnbinder = ButterKnife.bind(this, mRootView);
-        Bundle bundle = getArguments();
-        if (bundle != null) {
-            mKeyGroup = bundle.getString(SignInActivity.KEY_GROUP);
-        } else {
-            Toast.makeText(mContext, "Oops, no group", Toast.LENGTH_SHORT).show();
-            dismiss();
-        }
         builder.setTitle(R.string.add_type);
         builder.setView(mRootView);
         builder.setPositiveButton("OK", (dialogInterface, i) -> {
@@ -151,7 +141,7 @@ public class AddTypeDialog extends DialogFragment {
     private void writeInGroupTypesReference(TypeMissing typeMissing) {
         mRootReference
                 .child(App.KEY_GROUP_TYPES_MISSING)
-                .child(mKeyGroup)
+                .child(App.getInstance().getKeyGroup())
                 .child(typeMissing.id_type)
                 .setValue(typeMissing);
     }

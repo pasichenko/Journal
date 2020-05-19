@@ -19,6 +19,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.makspasich.journal.R;
 import com.makspasich.journal.data.model.Missing;
+import com.makspasich.journal.data.model.StatusMissing;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -147,9 +148,9 @@ public class StudentReportAdapter extends RecyclerView.Adapter<StudentReportAdap
 
         void bind(Missing missing) {
             missingTitle.setText(String.valueOf(missing.number_pair));
-            if (missing.is_missing.equals("present")) {
+            if (missing.is_missing==StatusMissing.PRESENT) {
                 container.setBackgroundResource(R.color.present_student);
-            } else if (missing.is_missing.equals("absent")) {
+            } else if (missing.is_missing== StatusMissing.ABSENT) {
                 container.setBackgroundResource(R.color.absent_student);
                 if (missing.type_missing != null) {
                     setVisibilityStatusChip(true);

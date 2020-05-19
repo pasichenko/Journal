@@ -36,7 +36,6 @@ public class SettingTypesMissingActivity extends AppCompatActivity {
     //endregion
 
     private SettingTypesMissingAdapter mAdapter;
-    private String mKeyGroup;
 
     public SettingTypesMissingActivity() {
         mAuth = FirebaseAuth.getInstance();
@@ -51,13 +50,9 @@ public class SettingTypesMissingActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        mKeyGroup = getIntent().getStringExtra(SignInActivity.KEY_GROUP);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mAddTypeAB.setOnClickListener(v -> {
             AddTypeDialog custom = new AddTypeDialog(this);
-            Bundle arg = new Bundle();
-            arg.putString(SignInActivity.KEY_GROUP, mKeyGroup);
-            custom.setArguments(arg);
             custom.show(getSupportFragmentManager(), "");
         });
     }
@@ -65,7 +60,7 @@ public class SettingTypesMissingActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
-        Query typesQuery = mRootReference.child(App.KEY_GROUP_TYPES_MISSING).child(mKeyGroup);
+        Query typesQuery = mRootReference.child(App.KEY_GROUP_TYPES_MISSING).child(App.getInstance().getKeyGroup());
         mAdapter = new SettingTypesMissingAdapter(this, typesQuery);
         mRecyclerView.setAdapter(mAdapter);
     }

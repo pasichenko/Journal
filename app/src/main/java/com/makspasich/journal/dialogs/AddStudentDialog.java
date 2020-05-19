@@ -20,16 +20,12 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.makspasich.journal.App;
 import com.makspasich.journal.R;
-import com.makspasich.journal.activities.SignInActivity;
-import com.makspasich.journal.data.model.Missing;
 import com.makspasich.journal.data.model.Student;
+import com.makspasich.journal.data.utils.FirebaseDB;
 
 import java.util.Objects;
 
@@ -59,7 +55,6 @@ public class AddStudentDialog extends DialogFragment {
     TextInputEditText firstNameEditText;
     //endregion
 
-    private String mKeyGroup;
 
     public AddStudentDialog(Context context) {
         this.mContext = context;
@@ -75,13 +70,6 @@ public class AddStudentDialog extends DialogFragment {
         LayoutInflater inflater = Objects.requireNonNull(getActivity()).getLayoutInflater();
         mRootView = inflater.inflate(R.layout.add_student_dialog, null);
         mUnbinder = ButterKnife.bind(this, mRootView);
-        Bundle bundle = getArguments();
-        if (bundle != null) {
-            mKeyGroup = bundle.getString(SignInActivity.KEY_GROUP);
-        } else {
-            Toast.makeText(mContext, "Oops, no group", Toast.LENGTH_SHORT).show();
-            dismiss();
-        }
         builder.setTitle(R.string.add_student);
         builder.setView(mRootView);
         builder.setPositiveButton("OK", (dialogInterface, i) -> addStudent());
@@ -162,88 +150,13 @@ public class AddStudentDialog extends DialogFragment {
 
     private void addStudent() {
         if (validateLastNameInput() & validateFirstNameInput()) {
-            Student student = createStudent();
-            writeInStudentsReference(student);
-            writeInMissingsReference(student);
+            String keyStudent = mRootReference.child(App.KEY_STUDENTS).push().getKey();
+            String lastName = lastNameEditText.getText().toString();
+            String firstName = firstNameEditText.getText().toString();
+            Student student = new Student(keyStudent, lastName, firstName, null);
+            FirebaseDB.writeNewStudentInDB(student);
             Toast.makeText(mContext, R.string.student_added, Toast.LENGTH_SHORT).show();
             dismiss();
         }
-    }
-
-    private Student createStudent() {
-        String keyStudent = mRootReference.child(App.KEY_STUDENTS).push().getKey();
-        String lastName = lastNameEditText.getText().toString();
-        String firstName = firstNameEditText.getText().toString();
-        return new Student(keyStudent, lastName, firstName, null);
-    }
-
-    private void writeInStudentsReference(Student student) {
-        mRootReference
-                .child(App.KEY_STUDENTS)
-                .child(student.id_student)
-                .setValue(student);
-
-        mRootReference
-                .child(App.KEY_GROUP_STUDENTS)
-                .child(mKeyGroup)
-                .child(student.id_student)
-                .setValue(student);
-    }
-
-    private void writeInMissingsReference(Student student) {
-        DatabaseReference missingReference = mRootReference.child(App.KEY_GROUP_DAY_COUPLE_MISSINGS).child(mKeyGroup);
-        missingReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot date : dataSnapshot.getChildren()) {
-                    mRootReference
-                            .child(App.KEY_GROUP_STUDENT_DAY_MISSINGS)
-                            .child(mKeyGroup)
-                            .child(student.id_student)
-                            .child(date.getKey())
-                            .child("student")
-                            .setValue(student);
-                    mRootReference
-                            .child(App.KEY_GROUP_DAY_STUDENT_MISSINGS)
-                            .child(mKeyGroup)
-                            .child(date.getKey())
-                            .child(student.id_student)
-                            .child("student")
-                            .setValue(student);
-
-                    for (DataSnapshot couple : date.getChildren()) {
-                        String keyMissing = missingReference.child(date.getKey()).child(couple.getKey()).push().getKey();
-                        Missing missing = new Missing(date.getKey(), student, "null", null, Integer.valueOf(couple.getKey()));
-                        missingReference
-                                .child(date.getKey())
-                                .child(couple.getKey())
-                                .child(keyMissing)
-                                .setValue(missing);
-
-                        mRootReference
-                                .child(App.KEY_GROUP_STUDENT_DAY_MISSINGS)
-                                .child(mKeyGroup)
-                                .child(student.id_student)
-                                .child(date.getKey())
-                                .child("missings")
-                                .child(keyMissing)
-                                .setValue(missing);
-                        mRootReference
-                                .child(App.KEY_GROUP_DAY_STUDENT_MISSINGS)
-                                .child(mKeyGroup)
-                                .child(date.getKey())
-                                .child(student.id_student)
-                                .child("missings")
-                                .child(keyMissing)
-                                .setValue(missing);
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
     }
 }

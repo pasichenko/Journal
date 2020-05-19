@@ -11,17 +11,11 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.makspasich.journal.App;
 import com.makspasich.journal.R;
 import com.makspasich.journal.adapters.SetAttendanceAdapter;
-import com.makspasich.journal.data.model.Missing;
-import com.makspasich.journal.data.model.Student;
-import com.makspasich.journal.data.utils.FirebaseDB;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,7 +26,6 @@ public class ListAttendanceFragment extends Fragment {
     private Unbinder mUnbinder;
     private View mRootView;
 
-    private final DatabaseReference mRootReference;
     private DatabaseReference mAttendanceReference;
 
     //region BindView
@@ -41,24 +34,17 @@ public class ListAttendanceFragment extends Fragment {
     //endregion
 
     private SetAttendanceAdapter mAdapter;
-    private final String mKeyGroup;
-    private final String mDate;
-    private int mNumberPair;
 
-    public static ListAttendanceFragment newInstance(String keyGroup, String mDate, int numberPair) {
-        return new ListAttendanceFragment(keyGroup, mDate, numberPair);
+    public static ListAttendanceFragment newInstance(int numberPair) {
+        return new ListAttendanceFragment(numberPair);
     }
 
-    private ListAttendanceFragment(String keyGroup, String mDate, int numberPair) {
-        this.mKeyGroup = keyGroup;
-        this.mDate = mDate;
-        this.mNumberPair = numberPair;
-        this.mRootReference = FirebaseDatabase.getInstance().getReference();
-        mAttendanceReference = mRootReference.child(App.KEY_GROUP_DAY_COUPLE_MISSINGS)
-                .child(mKeyGroup)
-                .child(mDate)
-                .child(String.valueOf(mNumberPair));
-        mAttendanceReference.addListenerForSingleValueEvent(checkIsExistData);
+    private ListAttendanceFragment(int numberPair) {
+        mAttendanceReference = FirebaseDatabase.getInstance().getReference()
+                .child(App.KEY_GROUP_DAY_COUPLE_MISSINGS)
+                .child(App.getInstance().getKeyGroup())
+                .child(App.getInstance().getSelectedDateString())
+                .child(String.valueOf(numberPair));
     }
 
     @Nullable
@@ -75,7 +61,7 @@ public class ListAttendanceFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        mAdapter = new SetAttendanceAdapter(getContext(), mAttendanceReference, mKeyGroup);
+        mAdapter = new SetAttendanceAdapter(getContext(), mAttendanceReference);
         mRecyclerView.setAdapter(mAdapter);
     }
 
@@ -90,39 +76,4 @@ public class ListAttendanceFragment extends Fragment {
         super.onDestroyView();
         mUnbinder.unbind();
     }
-
-    private ValueEventListener checkIsExistData = new ValueEventListener() {
-        @Override
-        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-            if (!dataSnapshot.exists()) {
-                mRootReference
-                        .child(App.KEY_GROUP_STUDENTS)
-                        .child(mKeyGroup)
-                        .addListenerForSingleValueEvent(getGroupStudents);
-            }
-        }
-
-        @Override
-        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-        }
-    };
-
-    private ValueEventListener getGroupStudents = new ValueEventListener() {
-        @Override
-        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-            for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
-                Student student = childSnapshot.getValue(Student.class);
-                String keyMissing = mAttendanceReference.push().getKey();
-                Missing missing = new Missing(mDate, student, "null", null, mNumberPair);
-                FirebaseDB.createMissingInDB(mKeyGroup, mDate, mNumberPair, keyMissing, missing);
-            }
-        }
-
-        @Override
-        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-        }
-    };
 }

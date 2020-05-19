@@ -23,7 +23,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.makspasich.journal.R;
-import com.makspasich.journal.activities.SignInActivity;
 import com.makspasich.journal.data.utils.FirebaseDB;
 
 import java.util.Objects;
@@ -50,7 +49,6 @@ public class LinkedStudentDialog extends DialogFragment {
     TextInputEditText userLinkEditText;
     //endregion
 
-    private String mKeyGroup;
     private String mKeyStudent;
 
     public LinkedStudentDialog(Context context) {
@@ -69,7 +67,6 @@ public class LinkedStudentDialog extends DialogFragment {
         mUnbinder = ButterKnife.bind(this, mRootView);
         Bundle bundle = getArguments();
         if (bundle != null) {
-            mKeyGroup = bundle.getString(SignInActivity.KEY_GROUP);
             mKeyStudent = bundle.getString("KEY_STUDENT");
         } else {
             Toast.makeText(mContext, "Oops, no group", Toast.LENGTH_SHORT).show();
@@ -125,7 +122,7 @@ public class LinkedStudentDialog extends DialogFragment {
     private void linkedUser() {
         if (validateLastNameInput()) {
             String keyUser = userLinkEditText.getText().toString();
-            FirebaseDB.linkedUserInDB(mKeyGroup, keyUser, mKeyStudent);
+            FirebaseDB.linkedUserInDB(keyUser, mKeyStudent);
             Toast.makeText(mContext, "Student added", Toast.LENGTH_SHORT).show();
             dismiss();
         }

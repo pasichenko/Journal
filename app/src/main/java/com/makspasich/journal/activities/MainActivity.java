@@ -32,14 +32,12 @@ import com.makspasich.journal.App;
 import com.makspasich.journal.R;
 import com.makspasich.journal.data.model.Group;
 import com.makspasich.journal.data.utils.CircularTransformation;
+import com.makspasich.journal.data.utils.FirebaseDB;
 import com.makspasich.journal.fragments.CheckAttendance.ReportAttendanceFragment;
 import com.makspasich.journal.fragments.SetAttendance.SetAttendanceFragment;
 import com.makspasich.journal.fragments.SetReason.SetReasonMissingFragment;
 import com.makspasich.journal.fragments.StudentReportFragment;
 import com.squareup.picasso.Picasso;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -67,20 +65,11 @@ public class MainActivity extends AppCompatActivity
     private HeaderViewHolder mHeaderView;
     //endregion
 
-    private String mKeyGroup;
-    private String mKeyStudent;
-    private String mDate;
     private boolean isHeadOfGroup = false;
-    private Date currentDate;
-    private SimpleDateFormat formatter = new SimpleDateFormat(App.DATE_FORMAT);
 
     public MainActivity() {
         mAuth = FirebaseAuth.getInstance();
         mRootReference = FirebaseDatabase.getInstance().getReference();
-        mKeyGroup = App.getInstance().getKeyGroup();
-        mKeyStudent = App.getInstance().getKeyStudent();
-        currentDate = App.getInstance().getSelectedDay();
-        mDate = formatter.format(currentDate);
     }
 
     @Override
@@ -91,18 +80,17 @@ public class MainActivity extends AppCompatActivity
         View header = mNavigationView.getHeaderView(0);
         mHeaderView = new HeaderViewHolder(header);
 
-        mKeyGroup = getIntent().getStringExtra(SignInActivity.KEY_GROUP);
-        mKeyStudent = getIntent().getStringExtra(SignInActivity.KEY_STUDENT);
         setSupportActionBar(toolbar);
 
-        fab.setText(mDate);
+        fab.setText(App.getInstance().getSelectedDateString());
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         bindViews();
 
-        mRootReference.child(App.KEY_GROUPS).child(mKeyGroup).addValueEventListener(new ValueEventListener() {
+        mRootReference.child(App.KEY_GROUPS)
+                .child(App.getInstance().getKeyGroup()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Group group = dataSnapshot.getValue(Group.class);
@@ -112,12 +100,12 @@ public class MainActivity extends AppCompatActivity
                         mNavigationView.getMenu().findItem(R.id.set_reason_for_missing).setVisible(true);
                         mNavigationView.getMenu().findItem(R.id.setting_group).setVisible(true);
                         if (savedInstanceState == null) {
-                            replaceFragment(new SetAttendanceFragment(mKeyGroup), R.id.set_attendance);
+                            replaceFragment(new SetAttendanceFragment(), R.id.set_attendance);
                         }
                         isHeadOfGroup = true;
                     } else {
                         if (savedInstanceState == null) {
-                            replaceFragment(new StudentReportFragment(mKeyGroup, mKeyStudent), R.id.report_attendance);
+                            replaceFragment(new StudentReportFragment(), R.id.report_attendance);
                         }
                         isHeadOfGroup = false;
                     }
@@ -130,11 +118,17 @@ public class MainActivity extends AppCompatActivity
 
             }
         });
+        FirebaseDB.checkIfExistsMissing();
     }
 
     private void bindViews() {
         fab.setOnClickListener(view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show());
+                .setAction("Action", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        FirebaseDB.checkIfExistsMissing();
+                    }
+                }).show());
 
         mNavigationView.setNavigationItemSelectedListener(this);
 
@@ -171,14 +165,14 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int itemSelectedId = item.getItemId();
         if (itemSelectedId == R.id.set_attendance) {
-            replaceFragment(new SetAttendanceFragment(mKeyGroup), itemSelectedId);
+            replaceFragment(new SetAttendanceFragment(), itemSelectedId);
         } else if (itemSelectedId == R.id.set_reason_for_missing) {
-            replaceFragment(new SetReasonMissingFragment(mKeyGroup), itemSelectedId);
+            replaceFragment(new SetReasonMissingFragment(), itemSelectedId);
         } else if (itemSelectedId == R.id.report_attendance) {
             if (isHeadOfGroup) {
-                replaceFragment(new ReportAttendanceFragment(mKeyGroup), itemSelectedId);
+                replaceFragment(new ReportAttendanceFragment(), itemSelectedId);
             } else {
-                replaceFragment(new StudentReportFragment(mKeyGroup, mKeyStudent), itemSelectedId);
+                replaceFragment(new StudentReportFragment(), itemSelectedId);
             }
         } else if (itemSelectedId == R.id.setting_group) {
             Intent intent = new Intent(MainActivity.this, SettingGroupActivity.class);
