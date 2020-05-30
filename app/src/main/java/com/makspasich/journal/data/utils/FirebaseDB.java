@@ -34,12 +34,18 @@ public class FirebaseDB {
     public static final DatabaseReference groupStudentsReference = FirebaseDatabase.getInstance().getReference()
             .child(App.KEY_GROUP_STUDENTS)
             .child(App.getInstance().getKeyGroup());
+
+    public static final DatabaseReference groupDaysReference = FirebaseDatabase.getInstance().getReference()
+            .child(App.KEY_GROUP_DAYS)
+            .child(App.getInstance().getKeyGroup());
+
     private static final int COUNT_COUPLES = 6;
 
     public static void checkIfExistsMissing() {
         ValueEventListener getGroupStudents = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                FirebaseDB.createNewDay(App.getInstance().getSelectedDateString());
                 for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
                     Student student = childSnapshot.getValue(Student.class);
                     FirebaseDB.createMissingInDB(App.getInstance().getSelectedDateString(), student);
@@ -130,6 +136,39 @@ public class FirebaseDB {
 
                     }
                 });
+    }
+
+    private static void createNewDay(String date) {
+        groupDaysReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Map<String, Object> dates = new HashMap<>();
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot dateSnapshot : dataSnapshot.getChildren()) {
+                        dates.put(dateSnapshot.getKey(), dateSnapshot.getValue());
+                    }
+                }
+                dates.put(date, true);
+                groupDaysReference.updateChildren(dates);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void getDays(ValueEventListener valueEventListener) {
+        if (valueEventListener != null) {
+            groupDaysReference.addListenerForSingleValueEvent(valueEventListener);
+        }
+    }
+
+    public static void getDaysByCurrentStudentId(String studentId, ValueEventListener valueEventListener) {
+        if (valueEventListener != null) {
+            studentMissingReference.child(studentId).addListenerForSingleValueEvent(valueEventListener);
+        }
     }
 
     public static void writeNewStudentInDB(Student student) {

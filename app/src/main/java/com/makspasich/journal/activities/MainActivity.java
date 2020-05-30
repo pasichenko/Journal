@@ -7,6 +7,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -16,12 +17,12 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
+import com.applandeo.materialcalendarview.EventDay;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -31,13 +32,19 @@ import com.google.firebase.database.ValueEventListener;
 import com.makspasich.journal.App;
 import com.makspasich.journal.R;
 import com.makspasich.journal.data.model.Group;
+import com.makspasich.journal.data.model.StatusMissing;
 import com.makspasich.journal.data.utils.CircularTransformation;
 import com.makspasich.journal.data.utils.FirebaseDB;
+import com.makspasich.journal.dialogs.DatePickerDialog;
 import com.makspasich.journal.fragments.CheckAttendance.ReportAttendanceFragment;
 import com.makspasich.journal.fragments.SetAttendance.SetAttendanceFragment;
 import com.makspasich.journal.fragments.SetReason.SetReasonMissingFragment;
 import com.makspasich.journal.fragments.StudentReportFragment;
 import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -103,6 +110,7 @@ public class MainActivity extends AppCompatActivity
                             replaceFragment(new SetAttendanceFragment(), R.id.set_attendance);
                         }
                         isHeadOfGroup = true;
+                        FirebaseDB.checkIfExistsMissing();
                     } else {
                         if (savedInstanceState == null) {
                             replaceFragment(new StudentReportFragment(), R.id.report_attendance);
@@ -118,18 +126,77 @@ public class MainActivity extends AppCompatActivity
 
             }
         });
-        FirebaseDB.checkIfExistsMissing();
     }
 
     private void bindViews() {
-        fab.setOnClickListener(view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        FirebaseDB.checkIfExistsMissing();
-                    }
-                }).show());
+        fab.setOnClickListener(view -> {
 
+            if (isHeadOfGroup) {
+                FirebaseDB.getDays(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        ArrayList<EventDay> events = new ArrayList<>();
+                        if (dataSnapshot.exists()) {
+                            for (DataSnapshot dateSnapshot : dataSnapshot.getChildren()) {
+                                String stringDate = dateSnapshot.getKey();
+                                Calendar calendar = Calendar.getInstance();
+                                calendar.setTime(parseStringToDate(stringDate));
+                                events.add(new EventDay(calendar, R.drawable.ic_check_24dp));
+                            }
+                        }
+                        if (events.isEmpty()) {
+                            Toast.makeText(MainActivity.this, "You don't have missing", Toast.LENGTH_SHORT).show();
+                        } else {
+                            DatePickerDialog datePickerDialog;
+                            datePickerDialog = new DatePickerDialog(onDateSetListener, events, false);
+                            datePickerDialog.show(getSupportFragmentManager(), "tag");
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+            } else {
+                FirebaseDB.getDaysByCurrentStudentId(App.getInstance().getKeyStudent(), new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        ArrayList<EventDay> events = new ArrayList<>();
+                        if (dataSnapshot.exists()) {
+                            for (DataSnapshot dateSnapshot : dataSnapshot.getChildren()) {
+                                for (DataSnapshot statusMissing : dateSnapshot.child("missings").getChildren()) {
+                                    for (DataSnapshot variableSnapshot : statusMissing.getChildren()) {
+                                        if (variableSnapshot.getKey().equals("is_missing")) {
+                                            String stringDate = dateSnapshot.getKey();
+                                            Calendar calendar = Calendar.getInstance();
+                                            calendar.setTime(parseStringToDate(stringDate));
+                                            if (variableSnapshot.getValue(StatusMissing.class) == StatusMissing.PRESENT) {
+                                                events.add(new EventDay(calendar, R.drawable.ic_check_24dp));
+                                            } else if (variableSnapshot.getValue(StatusMissing.class) == StatusMissing.ABSENT) {
+                                                events.add(new EventDay(calendar, R.drawable.ic_close_24dp));
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        if (events.isEmpty()) {
+                            Toast.makeText(MainActivity.this, "You don't have missing", Toast.LENGTH_SHORT).show();
+                        } else {
+                            DatePickerDialog datePickerDialog;
+                            datePickerDialog = new DatePickerDialog(onDateSetListener, events, true);
+                            datePickerDialog.show(getSupportFragmentManager(), "tag");
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+            }
+        });
         mNavigationView.setNavigationItemSelectedListener(this);
 
         mHeaderView.displayName.setText(mAuth.getCurrentUser().getDisplayName());
@@ -141,8 +208,6 @@ public class MainActivity extends AppCompatActivity
                 .error(R.drawable.ic_warning)
                 .transform(new CircularTransformation(0))
                 .into(mHeaderView.avatarImage);
-
-
     }
 
     @Override
@@ -201,6 +266,27 @@ public class MainActivity extends AppCompatActivity
                 .replace(R.id.fragment_container, fragment)
                 .commit();
         mNavigationView.setCheckedItem(itemId);
+    }
+
+    DatePickerDialog.OnDateSetListener onDateSetListener = selectedDate -> {
+        selectDay(selectedDate.getTime());
+    };
+
+    private void selectDay(Date date) {
+        App.getInstance().setSelectedDate(date);
+        //TODO: rewrite this restart activity
+        startActivity(getIntent());
+        finish();
+    }
+
+    private Date parseStringToDate(String date) {
+        Date dte = new Date();
+        int year = Integer.parseInt(date.split("-")[0]) - 1900;
+        int month = Integer.parseInt(date.split("-")[1]) - 1;
+        dte.setYear(year);
+        dte.setMonth(month);
+        dte.setDate(Integer.parseInt(date.split("-")[2]));
+        return dte;
     }
 
     protected static class HeaderViewHolder {

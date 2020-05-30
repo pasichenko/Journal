@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.applandeo.materialcalendarview.CalendarView
+        android:id="@+id/calendarView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:headerColor="@android:color/white"
+        app:headerLabelColor="@android:color/black"
+        app:forwardButtonSrc="@drawable/ic_chevron_right_black_24dp"
+        app:previousButtonSrc="@drawable/ic_chevron_left_black_24dp"
+        app:disabledDaysLabelsColor="@color/colorAccent"
+        app:eventsEnabled="true"
+        app:type="one_day_picker" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
