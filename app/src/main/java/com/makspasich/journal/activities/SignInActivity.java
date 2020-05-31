@@ -174,6 +174,8 @@ public class SignInActivity extends BaseActivity {
 
     private void writeNewUser(String userId, String name, String email) {
         User user = new User(userId, name, email);
+        App.getInstance().setUser(user);
+        App.getInstance().setKeyUser(userId);
         mRootReference.child("users").child(userId).setValue(user);
     }
 

@@ -224,13 +224,15 @@ public class FirebaseDB {
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        Student student = dataSnapshot.getValue(Student.class);
-                        if (student != null) {
-                            student.user_reference = user;
-                            addStudentInGroupStudentsReference(student);
-                            addStudentInGroupCoupleReference(student);
-                            addStudentInStudentMissingReference(student);
-                            addStudentInDayMissingReference(student);
+                        if (dataSnapshot.exists()) {
+                            Student student = dataSnapshot.getValue(Student.class);
+                            if (student != null) {
+                                student.user_reference = user;
+                                addStudentInGroupStudentsReference(student);
+                                addStudentInGroupCoupleReference(student);
+                                addStudentInStudentMissingReference(student);
+                                addStudentInDayMissingReference(student);
+                            }
                         }
                     }
 

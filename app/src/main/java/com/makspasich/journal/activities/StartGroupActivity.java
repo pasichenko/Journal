@@ -19,9 +19,9 @@ import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.makspasich.journal.App;
 import com.makspasich.journal.R;
 import com.makspasich.journal.data.utils.CircularTransformation;
+import com.makspasich.journal.dialogs.AddGroupDialog;
 import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
@@ -63,17 +63,8 @@ public class StartGroupActivity extends AppCompatActivity {
 
         signOutButton.setOnClickListener(v -> signOut());
         createGroupButton.setOnClickListener(v -> {
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(StartGroupActivity.this);
-            builder.setTitle("Use website")
-                    .setMessage("You need use website " + App.URL_CREATE_GROUP)
-                    .setNegativeButton("Go to website", (dialog, id) -> {
-                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(App.URL_CREATE_GROUP));
-                        startActivity(browserIntent);
-                        dialog.cancel();
-                    });
-            AlertDialog alert = builder.create();
-            alert.show();
+            AddGroupDialog custom = new AddGroupDialog(this);
+            custom.show(getSupportFragmentManager(), "");
         });
         if (mAuth.getCurrentUser() != null) {
             displayNameUser.setText(mAuth.getCurrentUser().getDisplayName());
