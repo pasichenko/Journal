@@ -12,7 +12,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -23,26 +22,17 @@ import com.makspasich.journal.App;
 import com.makspasich.journal.R;
 import com.makspasich.journal.adapters.SetReasonMissingAdapter;
 import com.makspasich.journal.data.model.TypeMissing;
+import com.makspasich.journal.databinding.SetReasonFragmentBinding;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
-
 public class SetReasonMissingFragment extends Fragment {
     private static final String TAG = "SetReasonMissingFragment";
-    private View mRootView;
-    private Unbinder mUnbinder;
+    private SetReasonFragmentBinding binding;
 
     private final DatabaseReference mRootReference;
     private DatabaseReference mReasonReference;
-
-    //region BindView
-    @BindView(R.id.recycler_view)
-    protected RecyclerView mRecyclerView;
-    //endregion
 
     private SetReasonMissingAdapter mAdapter;
 
@@ -54,16 +44,15 @@ public class SetReasonMissingFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        mRootView = inflater.inflate(R.layout.set_reason_fragment, container, false);
-        mUnbinder = ButterKnife.bind(this, mRootView);
         setHasOptionsMenu(true);
+        binding = SetReasonFragmentBinding.inflate(inflater, container, false);
 
         mReasonReference = mRootReference.child(App.KEY_GROUP_DAY_STUDENT_MISSINGS)
                 .child(App.getInstance().getKeyGroup())
                 .child(App.getInstance().getSelectedDateString());
 
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        return mRootView;
+        binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        return binding.getRoot();
     }
 
     @Override
@@ -79,7 +68,7 @@ public class SetReasonMissingFragment extends Fragment {
                     types.add(type);
                 }
                 mAdapter = new SetReasonMissingAdapter(getContext(), mReasonReference, types);
-                mRecyclerView.setAdapter(mAdapter);
+                binding.recyclerView.setAdapter(mAdapter);
 
             }
 
@@ -114,7 +103,7 @@ public class SetReasonMissingFragment extends Fragment {
 
     @Override
     public void onDestroyView() {
+        binding = null;
         super.onDestroyView();
-        mUnbinder.unbind();
     }
 }

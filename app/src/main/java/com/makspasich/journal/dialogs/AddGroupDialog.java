@@ -2,7 +2,6 @@ package com.makspasich.journal.dialogs;
 
 
 import android.app.Dialog;
-import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -17,8 +16,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -27,17 +24,12 @@ import com.makspasich.journal.R;
 import com.makspasich.journal.data.model.Group;
 import com.makspasich.journal.data.model.Student;
 import com.makspasich.journal.data.utils.FirebaseDB;
+import com.makspasich.journal.databinding.CreateGroupDialogBinding;
 
 import java.util.Objects;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
-
 public class AddGroupDialog extends DialogFragment {
     private static final String TAG = "AddStudentDialog";
-    private Context mContext;
-    private Unbinder mUnbinder;
 
     private final FirebaseAuth mAuth;
     private final DatabaseReference mRootReference;
@@ -45,17 +37,11 @@ public class AddGroupDialog extends DialogFragment {
     private View mRootView;
     private AlertDialog dialog;
 
-    //region BindView
-    @BindView(R.id.create_group_til)
-    TextInputLayout groupNameTextInputLayout;
-    @BindView(R.id.create_group_et)
-    TextInputEditText groupNameLinkEditText;
-    //endregion
+   private CreateGroupDialogBinding binding;
 
     private String mKeyStudent;
 
-    public AddGroupDialog(Context context) {
-        this.mContext = context;
+    public AddGroupDialog() {
         mAuth = FirebaseAuth.getInstance();
         mRootReference = FirebaseDatabase.getInstance().getReference();
     }
@@ -64,16 +50,16 @@ public class AddGroupDialog extends DialogFragment {
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         super.onCreateDialog(savedInstanceState);
-        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(mContext, R.style.AlertDialogTheme);
-        LayoutInflater inflater = LayoutInflater.from(mContext);
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(requireContext(), R.style.AlertDialogTheme);
+        LayoutInflater inflater = LayoutInflater.from(requireContext());
         mRootView = inflater.inflate(R.layout.create_group_dialog, null);
-        mUnbinder = ButterKnife.bind(this, mRootView);
+        binding = CreateGroupDialogBinding.bind(mRootView);
         builder.setTitle("Create group");
         builder.setView(mRootView);
         builder.setPositiveButton("OK", (dialogInterface, i) -> createGroup());
         builder.setNegativeButton(R.string.cancel, null);
 
-        groupNameLinkEditText.addTextChangedListener(new TextWatcher() {
+     binding.   createGroupEt.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
@@ -85,14 +71,14 @@ public class AddGroupDialog extends DialogFragment {
             @Override
             public void afterTextChanged(Editable s) {
                 if (s.length() <= 0) {
-                    groupNameTextInputLayout.setError(getString(R.string.enter_name_group));
+                    binding.createGroupTil.setError(getString(R.string.enter_name_group));
                 } else {
-                    groupNameTextInputLayout.setError(null);
+                    binding.createGroupTil.setError(null);
                 }
             }
         });
 
-        groupNameLinkEditText.setOnEditorActionListener((textView, actionId, keyEvent) -> {
+        binding.createGroupEt.setOnEditorActionListener((textView, actionId, keyEvent) -> {
             if (actionId == EditorInfo.IME_ACTION_SEND) {
                 createGroup();
             }
@@ -103,13 +89,13 @@ public class AddGroupDialog extends DialogFragment {
     }
 
     private boolean validateLastNameInput() {
-        String loginInput = Objects.requireNonNull(groupNameTextInputLayout.getEditText()).getText().toString().trim();
+        String loginInput = Objects.requireNonNull(binding.createGroupTil.getEditText()).getText().toString().trim();
 
         if (loginInput.isEmpty()) {
-            groupNameTextInputLayout.setError(getString(R.string.enter_name_group));
+            binding.createGroupTil.setError(getString(R.string.enter_name_group));
             return false;
         } else {
-            groupNameTextInputLayout.setError(null);
+            binding.createGroupTil.setError(null);
             return true;
         }
 
@@ -117,7 +103,7 @@ public class AddGroupDialog extends DialogFragment {
 
     private void createGroup() {
         if (validateLastNameInput()) {
-            String nameGroup = groupNameLinkEditText.getText().toString();
+            String nameGroup = binding.createGroupEt.getText().toString();
 
             String keyGroup = FirebaseDatabase.getInstance().getReference().child(App.KEY_GROUPS).push().getKey();
             App.getInstance().setKeyGroup(keyGroup);
@@ -132,7 +118,7 @@ public class AddGroupDialog extends DialogFragment {
             Group group = new Group(keyGroup, nameGroup, starosta);
             FirebaseDatabase.getInstance().getReference().child(App.KEY_GROUPS).child(keyGroup).setValue(group);
 
-            Toast.makeText(mContext, "Group added", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), "Group added", Toast.LENGTH_SHORT).show();
             dismiss();
         }
     }

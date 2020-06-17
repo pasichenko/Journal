@@ -4,24 +4,18 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
 import com.applandeo.materialcalendarview.EventDay;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -35,6 +29,8 @@ import com.makspasich.journal.data.model.Group;
 import com.makspasich.journal.data.model.StatusMissing;
 import com.makspasich.journal.data.utils.CircularTransformation;
 import com.makspasich.journal.data.utils.FirebaseDB;
+import com.makspasich.journal.databinding.ActivityMainBinding;
+import com.makspasich.journal.databinding.NavHeaderMainBinding;
 import com.makspasich.journal.dialogs.DatePickerDialog;
 import com.makspasich.journal.fragments.CheckAttendance.ReportAttendanceFragment;
 import com.makspasich.journal.fragments.SetAttendance.SetAttendanceFragment;
@@ -46,31 +42,14 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
-
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private static final String TAG = "MainActivity";
 
-    private Unbinder mUnbinder;
-
+    private ActivityMainBinding binding;
+    private NavHeaderMainBinding navBinding;
     private final FirebaseAuth mAuth;
     private final DatabaseReference mRootReference;
-
-    //region BindView
-    @BindView(R.id.drawer_layout)
-    protected DrawerLayout drawer;
-    @BindView(R.id.fab)
-    protected ExtendedFloatingActionButton fab;
-    @BindView(R.id.toolbar)
-    protected Toolbar toolbar;
-    @BindView(R.id.nav_view)
-    protected NavigationView mNavigationView;
-
-    private HeaderViewHolder mHeaderView;
-    //endregion
 
     private boolean isHeadOfGroup = false;
 
@@ -82,17 +61,16 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        mUnbinder = ButterKnife.bind(this);
-        View header = mNavigationView.getHeaderView(0);
-        mHeaderView = new HeaderViewHolder(header);
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        navBinding = NavHeaderMainBinding.bind(binding.navView.getHeaderView(0));
+        setContentView(binding.getRoot());
 
-        setSupportActionBar(toolbar);
+        setSupportActionBar(binding.appBarLayout.toolbar);
 
-        fab.setText(App.getInstance().getSelectedDateString());
+        binding.appBarLayout.fab.setText(App.getInstance().getSelectedDateString());
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
+                this, binding.drawerLayout, binding.appBarLayout.toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        binding.drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
         bindViews();
 
@@ -103,9 +81,9 @@ public class MainActivity extends AppCompatActivity
                 Group group = dataSnapshot.getValue(Group.class);
                 if (group != null) {
                     if (mAuth.getCurrentUser().getUid().equals(group.starosta.user_reference.uid)) {
-                        mNavigationView.getMenu().findItem(R.id.set_attendance).setVisible(true);
-                        mNavigationView.getMenu().findItem(R.id.set_reason_for_missing).setVisible(true);
-                        mNavigationView.getMenu().findItem(R.id.setting_group).setVisible(true);
+                        binding.navView.getMenu().findItem(R.id.set_attendance).setVisible(true);
+                        binding.navView.getMenu().findItem(R.id.set_reason_for_missing).setVisible(true);
+                        binding.navView.getMenu().findItem(R.id.setting_group).setVisible(true);
                         if (savedInstanceState == null) {
                             replaceFragment(new SetAttendanceFragment(), R.id.set_attendance);
                         }
@@ -129,7 +107,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void bindViews() {
-        fab.setOnClickListener(view -> {
+        binding.appBarLayout.fab.setOnClickListener(view -> {
 
             if (isHeadOfGroup) {
                 FirebaseDB.getDays(new ValueEventListener() {
@@ -197,29 +175,23 @@ public class MainActivity extends AppCompatActivity
                 });
             }
         });
-        mNavigationView.setNavigationItemSelectedListener(this);
+        binding.navView.setNavigationItemSelectedListener(this);
 
-        mHeaderView.displayName.setText(mAuth.getCurrentUser().getDisplayName());
-        mHeaderView.email.setText(mAuth.getCurrentUser().getEmail());
+        navBinding.displayName.setText(mAuth.getCurrentUser().getDisplayName());
+        navBinding.email.setText(mAuth.getCurrentUser().getEmail());
         Uri photoUri = mAuth.getCurrentUser().getPhotoUrl();
         Picasso.get()
                 .load(photoUri)
                 .placeholder(R.drawable.account_circle_outline)
                 .error(R.drawable.ic_warning)
                 .transform(new CircularTransformation(0))
-                .into(mHeaderView.avatarImage);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mUnbinder.unbind();
+                .into(navBinding.avatarImage);
     }
 
     @Override
     public void onBackPressed() {
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
+        if (binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            binding.drawerLayout.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
         }
@@ -256,7 +228,7 @@ public class MainActivity extends AppCompatActivity
                 finish();
             });
         }
-        drawer.closeDrawer(GravityCompat.START);
+        binding.drawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
 
@@ -265,7 +237,7 @@ public class MainActivity extends AppCompatActivity
                 .beginTransaction()
                 .replace(R.id.fragment_container, fragment)
                 .commit();
-        mNavigationView.setCheckedItem(itemId);
+        binding.navView.setCheckedItem(itemId);
     }
 
     DatePickerDialog.OnDateSetListener onDateSetListener = selectedDate -> {
@@ -287,18 +259,5 @@ public class MainActivity extends AppCompatActivity
         dte.setMonth(month);
         dte.setDate(Integer.parseInt(date.split("-")[2]));
         return dte;
-    }
-
-    protected static class HeaderViewHolder {
-        @BindView(R.id.display_name)
-        protected TextView displayName;
-        @BindView(R.id.email)
-        protected TextView email;
-        @BindView(R.id.avatar_image)
-        protected ImageView avatarImage;
-
-        HeaderViewHolder(View view) {
-            ButterKnife.bind(this, view);
-        }
     }
 }

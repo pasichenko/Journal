@@ -13,27 +13,13 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.viewpager.widget.ViewPager;
 
-import com.google.android.material.tabs.TabLayout;
 import com.makspasich.journal.R;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
+import com.makspasich.journal.databinding.SetAttendanceFragmentBinding;
 
 public class SetAttendanceFragment extends Fragment {
     private static final String TAG = "SetAttendanceFragment";
-    private View mRootView;
-    private Unbinder mUnbinder;
-
-    //region BindView
-    @BindView(R.id.tab_layout)
-    protected TabLayout mTabLayout;
-    @BindView(R.id.view_pager)
-    protected ViewPager mViewPager;
-    //endregion
-
+    private SetAttendanceFragmentBinding binding;
 
     public SetAttendanceFragment() {
 
@@ -43,12 +29,11 @@ public class SetAttendanceFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        mRootView = inflater.inflate(R.layout.set_attendance_fragment, container, false);
-        mUnbinder = ButterKnife.bind(this, mRootView);
         setHasOptionsMenu(true);
-        mViewPager.setAdapter(new PagerAdapter(getChildFragmentManager()));
-        mTabLayout.setupWithViewPager(mViewPager);
-        return mRootView;
+        binding = SetAttendanceFragmentBinding.inflate(inflater, container, false);
+        binding.viewPager.setAdapter(new PagerAdapter(getChildFragmentManager()));
+        binding.tabLayout.setupWithViewPager(binding.viewPager);
+        return binding.getRoot();
     }
 
     @Override
@@ -69,8 +54,8 @@ public class SetAttendanceFragment extends Fragment {
 
     @Override
     public void onDestroyView() {
+        binding = null;
         super.onDestroyView();
-        mUnbinder.unbind();
     }
 
     private class PagerAdapter extends FragmentPagerAdapter {

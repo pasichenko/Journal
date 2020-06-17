@@ -10,7 +10,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
@@ -26,25 +25,17 @@ import com.google.firebase.database.ValueEventListener;
 import com.makspasich.journal.App;
 import com.makspasich.journal.R;
 import com.makspasich.journal.data.model.User;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
+import com.makspasich.journal.databinding.SigninActivityBinding;
 
 public class SignInActivity extends BaseActivity {
     private static final String TAG = "GoogleActivity";
 
-    private Unbinder mUnbinder;
+    private SigninActivityBinding binding;
 
     private static final int RC_SIGN_IN = 9001;
     private final FirebaseAuth mAuth;
     private final DatabaseReference mRootReference;
     private GoogleSignInClient mGoogleSignInClient;
-
-    //region BindView
-    @BindView(R.id.sign_in_google_account)
-    protected SignInButton signInButton;
-    //endregion
 
     public SignInActivity() {
         mAuth = FirebaseAuth.getInstance();
@@ -54,11 +45,11 @@ public class SignInActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.signin_activity);
-        mUnbinder = ButterKnife.bind(this);
+        binding = SigninActivityBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         setProgressBar(R.id.progressBar);
 
-        signInButton.setOnClickListener(v -> signIn());
+        binding.signInGoogleAccount.setOnClickListener(v -> signIn());
 
         // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -78,12 +69,6 @@ public class SignInActivity extends BaseActivity {
         if (currentUser != null) {
             onAuthSuccess(currentUser);
         }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mUnbinder.unbind();
     }
 
     @Override
@@ -107,7 +92,7 @@ public class SignInActivity extends BaseActivity {
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
         Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
         showProgressBar();
-        signInButton.setEnabled(false);
+        binding.signInGoogleAccount.setEnabled(false);
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, task -> {
@@ -121,7 +106,7 @@ public class SignInActivity extends BaseActivity {
                     }
 
                     hideProgressBar();
-                    signInButton.setEnabled(true);
+                    binding.signInGoogleAccount.setEnabled(true);
                 });
     }
 
@@ -134,7 +119,7 @@ public class SignInActivity extends BaseActivity {
         String username = usernameFromEmail(user.getEmail());
         writeNewUser(user.getUid(), username, user.getEmail());
         showProgressBar();
-        signInButton.setEnabled(false);
+        binding.signInGoogleAccount.setEnabled(false);
         mRootReference.child(App.KEY_USER_GROUP).child(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -162,7 +147,7 @@ public class SignInActivity extends BaseActivity {
                     finish();
                 }
                 hideProgressBar();
-                signInButton.setEnabled(true);
+                binding.signInGoogleAccount.setEnabled(true);
             }
 
             @Override

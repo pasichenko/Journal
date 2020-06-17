@@ -5,15 +5,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.Group;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.card.MaterialCardView;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -23,12 +19,10 @@ import com.makspasich.journal.R;
 import com.makspasich.journal.data.model.Missing;
 import com.makspasich.journal.data.model.StatusMissing;
 import com.makspasich.journal.data.utils.FirebaseDB;
+import com.makspasich.journal.databinding.ItemAttendanceBindingBinding;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class SetAttendanceAdapter extends RecyclerView.Adapter<SetAttendanceAdapter.RVHolder> {
 
@@ -136,9 +130,9 @@ public class SetAttendanceAdapter extends RecyclerView.Adapter<SetAttendanceAdap
     @NonNull
     @Override
     public RVHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        LayoutInflater inflater = LayoutInflater.from(mContext);
-        View view = inflater.inflate(R.layout.item_attendance_binding, parent, false);
-        return new RVHolder(view);
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+        ItemAttendanceBindingBinding binding = ItemAttendanceBindingBinding.inflate(inflater, parent, false);
+        return new RVHolder(binding);
     }
 
     @Override
@@ -159,52 +153,38 @@ public class SetAttendanceAdapter extends RecyclerView.Adapter<SetAttendanceAdap
     }
 
     class RVHolder extends RecyclerView.ViewHolder {
-
-        //region BindView
-        @BindView(R.id.container_card_view)
-        MaterialCardView container;
-        @BindView(R.id.person_name)
-        TextView personName;
-        @BindView(R.id.manage_attendance)
-        Group manageAttendance;
-        @BindView(R.id.true_button)
-        Button trueButton;
-        @BindView(R.id.false_button)
-        Button falseButton;
-        @BindView(R.id.cancel_button)
-        Button cancelButton;
-        //endregion
+        private ItemAttendanceBindingBinding binding;
 
         String keyMissing;
         private Missing missing;
 
-        RVHolder(@NonNull View itemView) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
-            trueButton.setBackgroundResource(R.drawable.ic_check_24dp);
-            falseButton.setBackgroundResource(R.drawable.ic_close_24dp);
-            cancelButton.setBackgroundResource(R.drawable.ic_cancel);
-            trueButton.setOnClickListener(view -> updateMissing(StatusMissing.PRESENT));
-            falseButton.setOnClickListener(view -> updateMissing(StatusMissing.ABSENT));
-            cancelButton.setOnClickListener(view -> updateMissing(StatusMissing.NULL));
+        RVHolder(@NonNull ItemAttendanceBindingBinding binding) {
+            super(binding.getRoot());
+            this.binding = binding;
+            binding.trueButton.setBackgroundResource(R.drawable.ic_check_24dp);
+            binding.falseButton.setBackgroundResource(R.drawable.ic_close_24dp);
+            binding.cancelButton.setBackgroundResource(R.drawable.ic_cancel);
+            binding.trueButton.setOnClickListener(view -> updateMissing(StatusMissing.PRESENT));
+            binding.falseButton.setOnClickListener(view -> updateMissing(StatusMissing.ABSENT));
+            binding.cancelButton.setOnClickListener(view -> updateMissing(StatusMissing.NULL));
         }
 
         void bind(String keyMissing, Missing missing) {
             this.keyMissing = keyMissing;
             this.missing = missing;
             String fio = missing.student.last_name + " " + missing.student.first_name;
-            personName.setText(fio);
+            binding.personName.setText(fio);
             if (missing.is_missing == StatusMissing.NULL) {
-                manageAttendance.setVisibility(View.VISIBLE);
-                cancelButton.setVisibility(View.GONE);
+                binding.manageAttendance.setVisibility(View.VISIBLE);
+                binding.cancelButton.setVisibility(View.GONE);
             } else {
-                manageAttendance.setVisibility(View.GONE);
-                cancelButton.setVisibility(View.VISIBLE);
+                binding.manageAttendance.setVisibility(View.GONE);
+                binding.cancelButton.setVisibility(View.VISIBLE);
             }
             if (missing.is_missing == StatusMissing.PRESENT) {
-                container.setBackgroundResource(R.color.present_student);
+                binding.containerCardView.setBackgroundResource(R.color.present_student);
             } else if (missing.is_missing == StatusMissing.ABSENT) {
-                container.setBackgroundResource(R.color.absent_student);
+                binding.containerCardView.setBackgroundResource(R.color.absent_student);
             }
         }
 

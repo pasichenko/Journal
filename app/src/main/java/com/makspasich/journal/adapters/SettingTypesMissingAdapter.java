@@ -7,18 +7,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.button.MaterialButton;
-import com.google.android.material.card.MaterialCardView;
-import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -26,12 +19,10 @@ import com.google.firebase.database.Query;
 import com.makspasich.journal.R;
 import com.makspasich.journal.activities.SettingTypesMissingActivity;
 import com.makspasich.journal.data.model.TypeMissing;
+import com.makspasich.journal.databinding.ItemTypesBinding;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class SettingTypesMissingAdapter extends RecyclerView.Adapter<SettingTypesMissingAdapter.RVHolder> {
     private static final String TAG = SettingTypesMissingActivity.class.getSimpleName();
@@ -126,9 +117,9 @@ public class SettingTypesMissingAdapter extends RecyclerView.Adapter<SettingType
     @NonNull
     @Override
     public SettingTypesMissingAdapter.RVHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        LayoutInflater inflater = LayoutInflater.from(mContext);
-        View view = inflater.inflate(R.layout.item_types, parent, false);
-        return new RVHolder(view);
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+        ItemTypesBinding binding = ItemTypesBinding.inflate(inflater, parent, false);
+        return new RVHolder(binding);
     }
 
     @Override
@@ -148,72 +139,47 @@ public class SettingTypesMissingAdapter extends RecyclerView.Adapter<SettingType
     }
 
     public class RVHolder extends RecyclerView.ViewHolder {
-        //region BindView
-        @BindView(R.id.container_card_view)
-        MaterialCardView containerCardView;
-        @BindView(R.id.type_name_text_view)
-        TextView typeNameTextView;
-        @BindView(R.id.type_short_name_text_view)
-        TextView typeShortTextView;
-        @BindView(R.id.edit_type_button)
-        Button editTypeButton;
-        @BindView(R.id.header_view)
-        ConstraintLayout headerView;
-        @BindView(R.id.expandable_view)
-        ConstraintLayout expandableView;
+        private ItemTypesBinding binding;
 
-        @BindView(R.id.full_name_til)
-        TextInputLayout fullNameTextInputLayout;
-        @BindView(R.id.full_name_et)
-        TextInputEditText fullNameEditText;
-        @BindView(R.id.short_name_til)
-        TextInputLayout shortNameTextInputLayout;
-        @BindView(R.id.short_name_et)
-        TextInputEditText shortNameEditText;
-        @BindView(R.id.cancel_action_button)
-        MaterialButton cancelActionButton;
-        @BindView(R.id.save_action_button)
-        MaterialButton saveActionButton;
-        //endregion
+        RVHolder(@NonNull ItemTypesBinding binding) {
+            super(binding.getRoot());
+            this.binding = binding;
 
-        RVHolder(@NonNull View itemView) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
-            editTypeButton.setBackgroundResource(R.drawable.ic_edit);
-            editTypeButton.setOnClickListener(v -> {
-                if (expandableView.getVisibility() == View.GONE) {
+            binding.editTypeButton.setBackgroundResource(R.drawable.ic_edit);
+            binding.editTypeButton.setOnClickListener(v -> {
+                if (binding.expandableView.getVisibility() == View.GONE) {
                     showExpandableView();
                 } else {
                     hideExpandableView();
                 }
             });
-            cancelActionButton.setOnClickListener(v -> {
-                if (expandableView.getVisibility() == View.VISIBLE) {
+            binding.cancelActionButton.setOnClickListener(v -> {
+                if (binding.expandableView.getVisibility() == View.VISIBLE) {
                     hideExpandableView();
                 }
             });
-            saveActionButton.setOnClickListener(view ->
+            binding.saveActionButton.setOnClickListener(view ->
                     //TODO: implementing change name type
                     Toast.makeText(mContext, "This functionality in progress", Toast.LENGTH_SHORT).show());
         }
 
         void bind(TypeMissing typeMissing) {
-            typeNameTextView.setText(typeMissing.name_type);
-            typeShortTextView.setText(typeMissing.short_name_type);
-            fullNameEditText.setText(typeMissing.name_type);
-            shortNameEditText.setText(typeMissing.short_name_type);
+            binding.typeNameTextView.setText(typeMissing.name_type);
+            binding.typeShortNameTextView.setText(typeMissing.short_name_type);
+            binding.fullNameEt.setText(typeMissing.name_type);
+            binding.shortNameEt.setText(typeMissing.short_name_type);
         }
 
         void hideExpandableView() {
-            TransitionManager.beginDelayedTransition(containerCardView, new AutoTransition());
-            expandableView.setVisibility(View.GONE);
-            editTypeButton.setBackgroundResource(R.drawable.ic_edit);
+            TransitionManager.beginDelayedTransition(binding.containerCardView, new AutoTransition());
+            binding.expandableView.setVisibility(View.GONE);
+            binding.editTypeButton.setBackgroundResource(R.drawable.ic_edit);
         }
 
         void showExpandableView() {
-            TransitionManager.beginDelayedTransition(containerCardView, new AutoTransition());
-            expandableView.setVisibility(View.VISIBLE);
-            editTypeButton.setBackgroundResource(R.drawable.ic_keyboard_arrow_up);
+            TransitionManager.beginDelayedTransition(binding.containerCardView, new AutoTransition());
+            binding.expandableView.setVisibility(View.VISIBLE);
+            binding.editTypeButton.setBackgroundResource(R.drawable.ic_keyboard_arrow_up);
         }
     }
 }

@@ -51,8 +51,9 @@ android {
     } else {
         throw new FileNotFoundException("Could not read version.properties!")
     }
-
-
+    viewBinding {
+        enabled = true
+    }
 }
 
 dependencies {
@@ -76,7 +77,5 @@ dependencies {
     implementation 'com.google.android.gms:play-services-auth:18.0.0'
     implementation 'com.squareup.picasso:picasso:2.71828'
 
-    implementation 'com.jakewharton:butterknife:10.1.0'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:10.1.0'
     implementation 'com.applandeo:material-calendar-view:1.7.0'
 }

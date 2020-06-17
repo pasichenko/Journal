@@ -6,8 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,40 +13,23 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.makspasich.journal.R;
 import com.makspasich.journal.data.utils.CircularTransformation;
+import com.makspasich.journal.databinding.ActivityStartGroupBinding;
 import com.makspasich.journal.dialogs.AddGroupDialog;
 import com.squareup.picasso.Picasso;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 
 public class StartGroupActivity extends AppCompatActivity {
     private static final String TAG = "StartGroupActivity";
 
-    private Unbinder mUnbinder;
+    private ActivityStartGroupBinding binding;
 
     private final FirebaseAuth mAuth;
     private GoogleSignInClient mGoogleSignInClient;
     private final DatabaseReference mRootReference;
-
-    //region BindView
-    @BindView(R.id.avatar_user)
-    protected ImageView avatarUser;
-    @BindView(R.id.display_name)
-    protected TextView displayNameUser;
-    @BindView(R.id.sign_out)
-    protected MaterialButton signOutButton;
-    @BindView(R.id.create_group)
-    protected MaterialButton createGroupButton;
-    @BindView(R.id.join_to_group)
-    protected MaterialButton joinGroupButton;
-    //endregion
 
     public StartGroupActivity() {
         mAuth = FirebaseAuth.getInstance();
@@ -58,25 +39,25 @@ public class StartGroupActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        binding = ActivityStartGroupBinding.inflate(getLayoutInflater());
         setContentView(R.layout.activity_start_group);
-        mUnbinder = ButterKnife.bind(this);
 
-        signOutButton.setOnClickListener(v -> signOut());
-        createGroupButton.setOnClickListener(v -> {
-            AddGroupDialog custom = new AddGroupDialog(this);
+        binding.signOut.setOnClickListener(v -> signOut());
+        binding.createGroup.setOnClickListener(v -> {
+            AddGroupDialog custom = new AddGroupDialog();
             custom.show(getSupportFragmentManager(), "");
         });
         if (mAuth.getCurrentUser() != null) {
-            displayNameUser.setText(mAuth.getCurrentUser().getDisplayName());
+            binding.displayName.setText(mAuth.getCurrentUser().getDisplayName());
             Uri photoUri = mAuth.getCurrentUser().getPhotoUrl();
             Picasso.get()
                     .load(photoUri)
                     .placeholder(R.drawable.account_circle_outline)
                     .error(R.drawable.ic_warning)
                     .transform(new CircularTransformation(0))
-                    .into(avatarUser);
+                    .into(binding.avatarUser);
         }
-        joinGroupButton.setOnClickListener(v -> {
+        binding.joinToGroup.setOnClickListener(v -> {
             String uid = mAuth.getCurrentUser().getUid();
             AlertDialog.Builder builder = new AlertDialog.Builder(StartGroupActivity.this);
             builder.setTitle(R.string.join_to_group)
@@ -117,9 +98,4 @@ public class StartGroupActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mUnbinder.unbind();
-    }
 }

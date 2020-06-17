@@ -11,9 +11,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.chip.Chip;
-import com.google.android.material.chip.ChipGroup;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -24,12 +22,10 @@ import com.makspasich.journal.data.model.StatusMissing;
 import com.makspasich.journal.data.model.Student;
 import com.makspasich.journal.data.model.TypeMissing;
 import com.makspasich.journal.data.utils.FirebaseDB;
+import com.makspasich.journal.databinding.ItemReasonBindingBinding;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class SetReasonMissingAdapter extends RecyclerView.Adapter<SetReasonMissingAdapter.RVHolder> {
 
@@ -142,9 +138,9 @@ public class SetReasonMissingAdapter extends RecyclerView.Adapter<SetReasonMissi
     @NonNull
     @Override
     public RVHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        LayoutInflater inflater = LayoutInflater.from(mContext);
-        View view = inflater.inflate(R.layout.item_reason_binding, parent, false);
-        return new RVHolder(view);
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+        ItemReasonBindingBinding binding = ItemReasonBindingBinding.inflate(inflater, parent, false);
+        return new RVHolder(binding);
     }
 
     @Override
@@ -166,50 +162,28 @@ public class SetReasonMissingAdapter extends RecyclerView.Adapter<SetReasonMissi
     }
 
     class RVHolder extends RecyclerView.ViewHolder {
+        private ItemReasonBindingBinding binding;
 
-        //region BindView
-        @BindView(R.id.container_card_view)
-        MaterialCardView container;
-        @BindView(R.id.person_name)
-        TextView personName;
-        @BindView(R.id.first_couple)
-        TextView firstCoupleTextView;
-        @BindView(R.id.second_couple)
-        TextView secondCoupleTextView;
-        @BindView(R.id.three_couple)
-        TextView threeCoupleTextView;
-        @BindView(R.id.four_couple)
-        TextView fourCoupleTextView;
-        @BindView(R.id.five_couple)
-        TextView fiveCoupleTextView;
-        @BindView(R.id.six_couple)
-        TextView sixCoupleTextView;
-        @BindView(R.id.status_chip)
-        Chip statusChip;
-
-        @BindView(R.id.types_missing_chip_group)
-        ChipGroup typesMissingChipGroup;
-        //endregion
         private List<Missing> listMissing;
         private List<String> missingsIds;
 
-        RVHolder(@NonNull View itemView) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
+        RVHolder(@NonNull ItemReasonBindingBinding binding) {
+            super(binding.getRoot());
+            this.binding = binding;
             for (TypeMissing type : mTypes) {
                 Chip chip =
-                        (Chip) LayoutInflater.from(mContext).inflate(R.layout.cat_chip_group_item_choice, typesMissingChipGroup, false);
+                        (Chip) LayoutInflater.from(binding.getRoot().getContext()).inflate(R.layout.cat_chip_group_item_choice, binding.typesMissingChipGroup, false);
                 chip.setText(type.short_name_type);
                 chip.setOnClickListener(v -> setTypeMissing(type));
-                typesMissingChipGroup.addView(chip);
+                binding.typesMissingChipGroup.addView(chip);
             }
-            statusChip.setOnClickListener(v -> setTypeMissing(null));
+            binding.statusChip.setOnClickListener(v -> setTypeMissing(null));
         }
 
 
         void bind(Student student, List<String> missingsIds, List<Missing> listMissing) {
             String fio = student.last_name + " " + student.first_name;
-            personName.setText(fio);
+            binding.personName.setText(fio);
             this.listMissing = listMissing;
             this.missingsIds = missingsIds;
             boolean isMissedAnyCouple = false;
@@ -217,17 +191,17 @@ public class SetReasonMissingAdapter extends RecyclerView.Adapter<SetReasonMissi
             TypeMissing typeSelected = null;
             for (Missing missing : listMissing) {
                 if (missing.number_pair == 1) {
-                    changeBackgroundMissing(firstCoupleTextView, missing);
+                    changeBackgroundMissing(binding.firstCouple, missing);
                 } else if (missing.number_pair == 2) {
-                    changeBackgroundMissing(secondCoupleTextView, missing);
+                    changeBackgroundMissing(binding.secondCouple, missing);
                 } else if (missing.number_pair == 3) {
-                    changeBackgroundMissing(threeCoupleTextView, missing);
+                    changeBackgroundMissing(binding.threeCouple, missing);
                 } else if (missing.number_pair == 4) {
-                    changeBackgroundMissing(fourCoupleTextView, missing);
+                    changeBackgroundMissing(binding.fourCouple, missing);
                 } else if (missing.number_pair == 5) {
-                    changeBackgroundMissing(fiveCoupleTextView, missing);
+                    changeBackgroundMissing(binding.fiveCouple, missing);
                 } else if (missing.number_pair == 6) {
-                    changeBackgroundMissing(sixCoupleTextView, missing);
+                    changeBackgroundMissing(binding.sixCouple, missing);
                 }
                 if (missing.is_missing == StatusMissing.ABSENT) {
                     isMissedAnyCouple = true;
@@ -240,20 +214,20 @@ public class SetReasonMissingAdapter extends RecyclerView.Adapter<SetReasonMissi
 
             if (isMissedAnyCouple) {
                 if (isSetttedTypeMissing) {
-                    typesMissingChipGroup.setVisibility(View.GONE);
+                    binding.typesMissingChipGroup.setVisibility(View.GONE);
                     setVisibilityStatusChip(true);
-                    statusChip.setText(typeSelected.short_name_type);
+                    binding.statusChip.setText(typeSelected.short_name_type);
                 } else {
-                    typesMissingChipGroup.setVisibility(View.VISIBLE);
+                    binding.typesMissingChipGroup.setVisibility(View.VISIBLE);
                     setVisibilityStatusChip(false);
                 }
             } else {
-                typesMissingChipGroup.setVisibility(View.GONE);
+                binding.typesMissingChipGroup.setVisibility(View.GONE);
                 setVisibilityStatusChip(false);
             }
 
             if (isSetttedTypeMissing) {
-                statusChip.setText(typeSelected.short_name_type);
+                binding.statusChip.setText(typeSelected.short_name_type);
             }
         }
 
@@ -272,7 +246,7 @@ public class SetReasonMissingAdapter extends RecyclerView.Adapter<SetReasonMissi
                         FirebaseDB.updateTypeMissingInDB(missing.number_pair, keyMissing, keyStudent, type);
                     }
                 }
-                statusChip.setText(type.short_name_type);
+                binding.statusChip.setText(type.short_name_type);
             }
         }
 
@@ -291,9 +265,9 @@ public class SetReasonMissingAdapter extends RecyclerView.Adapter<SetReasonMissi
 
         private void setVisibilityStatusChip(boolean visibility) {
             if (visibility) {
-                statusChip.setVisibility(View.VISIBLE);
+                binding.statusChip.setVisibility(View.VISIBLE);
             } else {
-                statusChip.setVisibility(View.GONE);
+                binding.statusChip.setVisibility(View.GONE);
             }
         }
     }

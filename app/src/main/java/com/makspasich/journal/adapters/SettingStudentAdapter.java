@@ -8,18 +8,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.button.MaterialButton;
-import com.google.android.material.card.MaterialCardView;
-import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -28,13 +21,11 @@ import com.makspasich.journal.R;
 import com.makspasich.journal.activities.SettingStudentsActivity;
 import com.makspasich.journal.data.model.Student;
 import com.makspasich.journal.data.model.User;
+import com.makspasich.journal.databinding.ItemStudentsBinding;
 import com.makspasich.journal.dialogs.LinkedStudentDialog;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class SettingStudentAdapter extends RecyclerView.Adapter<SettingStudentAdapter.RVHolder> {
     private static final String TAG = "SetAttendanceAdapter";
@@ -44,7 +35,6 @@ public class SettingStudentAdapter extends RecyclerView.Adapter<SettingStudentAd
 
     private List<String> mStudentIds = new ArrayList<>();
     private List<Student> mStudents = new ArrayList<>();
-
 
 
     public SettingStudentAdapter(final Context context, Query query) {
@@ -142,9 +132,9 @@ public class SettingStudentAdapter extends RecyclerView.Adapter<SettingStudentAd
     @NonNull
     @Override
     public SettingStudentAdapter.RVHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        LayoutInflater inflater = LayoutInflater.from(mContext);
-        View view = inflater.inflate(R.layout.item_students, parent, false);
-        return new RVHolder(view);
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+        ItemStudentsBinding binding = ItemStudentsBinding.inflate(inflater, parent, false);
+        return new RVHolder(binding);
     }
 
     @Override
@@ -164,66 +154,36 @@ public class SettingStudentAdapter extends RecyclerView.Adapter<SettingStudentAd
     }
 
     public class RVHolder extends RecyclerView.ViewHolder {
-        //region BindView
-        @BindView(R.id.container_card_view)
-        MaterialCardView containerCardView;
-        @BindView(R.id.person_name_text_view)
-        TextView personNameTextView;
-        @BindView(R.id.uid_text_view)
-        TextView uidTextView;
-        @BindView(R.id.username_text_view)
-        TextView usernameTextView;
-        @BindView(R.id.edit_student_button)
-        Button editStudentButton;
-        @BindView(R.id.link_user_button)
-        Button linkUserButton;
-        @BindView(R.id.header_view)
-        ConstraintLayout headerView;
-        @BindView(R.id.expandable_view)
-        ConstraintLayout expandableView;
+        private ItemStudentsBinding binding;
 
-        @BindView(R.id.last_name_til)
-        TextInputLayout lastNameTextInputLayout;
-        @BindView(R.id.last_name_et)
-        TextInputEditText lastNameEditText;
-        @BindView(R.id.first_name_til)
-        TextInputLayout firstNameTextInputLayout;
-        @BindView(R.id.first_name_et)
-        TextInputEditText firstNameEditText;
-        @BindView(R.id.cancel_action_button)
-        MaterialButton cancelActionButton;
-        @BindView(R.id.save_action_button)
-        MaterialButton saveActionButton;
-        //endregion
-
-        RVHolder(@NonNull View itemView) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
-            editStudentButton.setBackgroundResource(R.drawable.ic_edit);
-            linkUserButton.setBackgroundResource(R.drawable.ic_insert_link);
-            editStudentButton.setOnClickListener(v -> {
-                if (expandableView.getVisibility() == View.GONE) {
+        RVHolder(@NonNull ItemStudentsBinding binding) {
+            super(binding.getRoot());
+            this.binding = binding;
+            binding.editStudentButton.setBackgroundResource(R.drawable.ic_edit);
+            binding.linkUserButton.setBackgroundResource(R.drawable.ic_insert_link);
+            binding.editStudentButton.setOnClickListener(v -> {
+                if (binding.expandableView.getVisibility() == View.GONE) {
                     showExpandableView();
                 } else {
                     hideExpandableView();
                 }
             });
 
-            cancelActionButton.setOnClickListener(v -> {
-                if (expandableView.getVisibility() == View.VISIBLE) {
+            binding.cancelActionButton.setOnClickListener(v -> {
+                if (binding.expandableView.getVisibility() == View.VISIBLE) {
                     hideExpandableView();
                 }
             });
-            saveActionButton.setOnClickListener(view ->
+            binding.saveActionButton.setOnClickListener(view ->
                     //TODO: implementing change name group
                     Toast.makeText(mContext, "This functionality in progress", Toast.LENGTH_SHORT).show());
         }
 
         void bind(Student student) {
             String fio = student.last_name + " " + student.first_name;
-            personNameTextView.setText(fio);
-            linkUserButton.setOnClickListener(v -> {
-                LinkedStudentDialog custom = new LinkedStudentDialog(mContext);
+            binding.personNameTextView.setText(fio);
+            binding.linkUserButton.setOnClickListener(v -> {
+                LinkedStudentDialog custom = new LinkedStudentDialog();
                 Bundle arg = new Bundle();
                 arg.putString("KEY_STUDENT", student.id_student);
                 custom.setArguments(arg);
@@ -232,23 +192,23 @@ public class SettingStudentAdapter extends RecyclerView.Adapter<SettingStudentAd
 
             User user = student.user_reference;
             if (user != null) {
-                uidTextView.setText(mContext.getString(R.string.user_id, user.uid));
-                usernameTextView.setText(mContext.getString(R.string.username, user.username));
+                binding.uidTextView.setText(mContext.getString(R.string.user_id, user.uid));
+                binding.usernameTextView.setText(mContext.getString(R.string.username, user.username));
             }
-            lastNameEditText.setText(student.last_name);
-            firstNameEditText.setText(student.first_name);
+            binding.lastNameEt.setText(student.last_name);
+            binding.firstNameEt.setText(student.first_name);
         }
 
         void hideExpandableView() {
-            TransitionManager.beginDelayedTransition(containerCardView, new AutoTransition());
-            expandableView.setVisibility(View.GONE);
-            editStudentButton.setBackgroundResource(R.drawable.ic_edit);
+            TransitionManager.beginDelayedTransition(binding.containerCardView, new AutoTransition());
+            binding.expandableView.setVisibility(View.GONE);
+            binding.editStudentButton.setBackgroundResource(R.drawable.ic_edit);
         }
 
         void showExpandableView() {
-            TransitionManager.beginDelayedTransition(containerCardView, new AutoTransition());
-            expandableView.setVisibility(View.VISIBLE);
-            editStudentButton.setBackgroundResource(R.drawable.ic_keyboard_arrow_up);
+            TransitionManager.beginDelayedTransition(binding.containerCardView, new AutoTransition());
+            binding.expandableView.setVisibility(View.VISIBLE);
+            binding.editStudentButton.setBackgroundResource(R.drawable.ic_keyboard_arrow_up);
         }
     }
 }

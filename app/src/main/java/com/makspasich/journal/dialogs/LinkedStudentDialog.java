@@ -2,7 +2,6 @@ package com.makspasich.journal.dialogs;
 
 
 import android.app.Dialog;
-import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -17,59 +16,36 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.makspasich.journal.R;
 import com.makspasich.journal.data.utils.FirebaseDB;
+import com.makspasich.journal.databinding.LinkedStudentDialogBinding;
 
 import java.util.Objects;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
-
 public class LinkedStudentDialog extends DialogFragment {
     private static final String TAG = "AddStudentDialog";
-    private Context mContext;
-    private Unbinder mUnbinder;
 
-    private final FirebaseAuth mAuth;
-    private final DatabaseReference mRootReference;
-
-    private View mRootView;
+    private LinkedStudentDialogBinding binding;
     private AlertDialog dialog;
-
-    //region BindView
-    @BindView(R.id.user_link_til)
-    TextInputLayout userLinkTextInputLayout;
-    @BindView(R.id.user_link_et)
-    TextInputEditText userLinkEditText;
-    //endregion
 
     private String mKeyStudent;
 
-    public LinkedStudentDialog(Context context) {
-        this.mContext = context;
-        mAuth = FirebaseAuth.getInstance();
-        mRootReference = FirebaseDatabase.getInstance().getReference();
+    public LinkedStudentDialog() {
     }
 
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         super.onCreateDialog(savedInstanceState);
-        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(mContext, R.style.AlertDialogTheme);
-        LayoutInflater inflater = Objects.requireNonNull(getActivity()).getLayoutInflater();
-        mRootView = inflater.inflate(R.layout.linked_student_dialog, null);
-        mUnbinder = ButterKnife.bind(this, mRootView);
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(requireContext(), R.style.AlertDialogTheme);
+        LayoutInflater inflater = LayoutInflater.from(requireContext());
+        View mRootView = inflater.inflate(R.layout.linked_student_dialog, null);
+        binding = LinkedStudentDialogBinding.bind(mRootView);
         Bundle bundle = getArguments();
         if (bundle != null) {
             mKeyStudent = bundle.getString("KEY_STUDENT");
         } else {
-            Toast.makeText(mContext, "Oops, no group", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), "Oops, no group", Toast.LENGTH_SHORT).show();
             dismiss();
         }
         builder.setTitle("Add student");
@@ -77,7 +53,7 @@ public class LinkedStudentDialog extends DialogFragment {
         builder.setPositiveButton("OK", (dialogInterface, i) -> linkedUser());
         builder.setNegativeButton(R.string.cancel, null);
 
-        userLinkEditText.addTextChangedListener(new TextWatcher() {
+        binding.userLinkEt.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
@@ -89,14 +65,14 @@ public class LinkedStudentDialog extends DialogFragment {
             @Override
             public void afterTextChanged(Editable s) {
                 if (s.length() <= 0) {
-                    userLinkTextInputLayout.setError(getString(R.string.enter_last_name));
+                    binding.userLinkTil.setError(getString(R.string.enter_last_name));
                 } else {
-                    userLinkTextInputLayout.setError(null);
+                    binding.userLinkTil.setError(null);
                 }
             }
         });
 
-        userLinkEditText.setOnEditorActionListener((textView, actionId, keyEvent) -> {
+        binding.userLinkEt.setOnEditorActionListener((textView, actionId, keyEvent) -> {
             if (actionId == EditorInfo.IME_ACTION_SEND) {
                 linkedUser();
             }
@@ -107,13 +83,13 @@ public class LinkedStudentDialog extends DialogFragment {
     }
 
     private boolean validateLastNameInput() {
-        String loginInput = Objects.requireNonNull(userLinkTextInputLayout.getEditText()).getText().toString().trim();
+        String loginInput = Objects.requireNonNull(binding.userLinkTil.getEditText()).getText().toString().trim();
 
         if (loginInput.isEmpty()) {
-            userLinkTextInputLayout.setError(getString(R.string.enter_last_name));
+            binding.userLinkTil.setError(getString(R.string.enter_last_name));
             return false;
         } else {
-            userLinkTextInputLayout.setError(null);
+            binding.userLinkTil.setError(null);
             return true;
         }
 
@@ -121,9 +97,9 @@ public class LinkedStudentDialog extends DialogFragment {
 
     private void linkedUser() {
         if (validateLastNameInput()) {
-            String keyUser = userLinkEditText.getText().toString();
+            String keyUser = binding.userLinkEt.getText().toString();
             FirebaseDB.linkedUserInDB(keyUser, mKeyStudent);
-            Toast.makeText(mContext, "Student added", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), "Student added", Toast.LENGTH_SHORT).show();
             dismiss();
         }
     }

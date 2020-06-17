@@ -5,14 +5,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.card.MaterialCardView;
-import com.google.android.material.chip.Chip;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -20,12 +17,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.makspasich.journal.R;
 import com.makspasich.journal.data.model.Missing;
 import com.makspasich.journal.data.model.StatusMissing;
+import com.makspasich.journal.databinding.ItemReportForStudentBinding;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class StudentReportAdapter extends RecyclerView.Adapter<StudentReportAdapter.RVHolder> {
 
@@ -108,9 +103,9 @@ public class StudentReportAdapter extends RecyclerView.Adapter<StudentReportAdap
     @NonNull
     @Override
     public RVHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        LayoutInflater inflater = LayoutInflater.from(mContext);
-        View view = inflater.inflate(R.layout.item_report_for_student, parent, false);
-        return new RVHolder(view);
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+        ItemReportForStudentBinding binding = ItemReportForStudentBinding.inflate(inflater, parent, false);
+        return new RVHolder(binding);
     }
 
     @Override
@@ -130,34 +125,26 @@ public class StudentReportAdapter extends RecyclerView.Adapter<StudentReportAdap
     }
 
     class RVHolder extends RecyclerView.ViewHolder {
+        private ItemReportForStudentBinding binding;
 
-        //region BindView
-        @BindView(R.id.container_card_view)
-        MaterialCardView container;
-        @BindView(R.id.missing_title)
-        TextView missingTitle;
-        @BindView(R.id.status_chip)
-        Chip statusChip;
-        //endregion
-
-        RVHolder(@NonNull View itemView) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
+        RVHolder(@NonNull ItemReportForStudentBinding binding) {
+            super(binding.getRoot());
+            this.binding = binding;
         }
 
 
         void bind(Missing missing) {
-            missingTitle.setText(String.valueOf(missing.number_pair));
-            if (missing.is_missing==StatusMissing.PRESENT) {
-                container.setBackgroundResource(R.color.present_student);
-            } else if (missing.is_missing== StatusMissing.ABSENT) {
-                container.setBackgroundResource(R.color.absent_student);
+            binding.missingTitle.setText(String.valueOf(missing.number_pair));
+            if (missing.is_missing == StatusMissing.PRESENT) {
+                binding.containerCardView.setBackgroundResource(R.color.present_student);
+            } else if (missing.is_missing == StatusMissing.ABSENT) {
+                binding.containerCardView.setBackgroundResource(R.color.absent_student);
                 if (missing.type_missing != null) {
                     setVisibilityStatusChip(true);
-                    statusChip.setText(missing.type_missing.short_name_type);
+                    binding.statusChip.setText(missing.type_missing.short_name_type);
                 } else {
                     setVisibilityStatusChip(true);
-                    statusChip.setText(R.string.not_set);
+                    binding.statusChip.setText(R.string.not_set);
                 }
             }
 
@@ -165,9 +152,9 @@ public class StudentReportAdapter extends RecyclerView.Adapter<StudentReportAdap
 
         private void setVisibilityStatusChip(boolean visibility) {
             if (visibility) {
-                statusChip.setVisibility(View.VISIBLE);
+                binding.statusChip.setVisibility(View.VISIBLE);
             } else {
-                statusChip.setVisibility(View.GONE);
+                binding.statusChip.setVisibility(View.GONE);
             }
         }
     }

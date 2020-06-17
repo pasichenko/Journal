@@ -5,54 +5,37 @@ import android.view.MenuItem;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.makspasich.journal.App;
-import com.makspasich.journal.R;
 import com.makspasich.journal.adapters.SettingStudentAdapter;
+import com.makspasich.journal.databinding.ActivitySettingStudentsBinding;
 import com.makspasich.journal.dialogs.AddStudentDialog;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 
 public class SettingStudentsActivity extends AppCompatActivity {
     private static final String TAG = "SettingStudentsActivity";
-    private Unbinder mUnbinder;
-
-    private final FirebaseAuth mAuth;
+    private ActivitySettingStudentsBinding binding;
     private final DatabaseReference mRootReference;
-
-    //region BindView
-    @BindView(R.id.recycler_view)
-    protected RecyclerView mRecyclerView;
-    @BindView(R.id.add_student_fab)
-    protected FloatingActionButton mAddStudentFAB;
-    //endregion
 
     private SettingStudentAdapter mAdapter;
 
     public SettingStudentsActivity() {
-        mAuth = FirebaseAuth.getInstance();
         mRootReference = FirebaseDatabase.getInstance().getReference();
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_setting_students);
-        mUnbinder = ButterKnife.bind(this);
+        binding = ActivitySettingStudentsBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mAddStudentFAB.setOnClickListener(v -> {
-            AddStudentDialog custom = new AddStudentDialog(this);
+        binding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        binding.addStudentFab.setOnClickListener(v -> {
+            AddStudentDialog custom = new AddStudentDialog();
             custom.show(getSupportFragmentManager(), "");
         });
     }
@@ -62,7 +45,7 @@ public class SettingStudentsActivity extends AppCompatActivity {
         super.onStart();
         Query attendanceQuery = mRootReference.child(App.KEY_GROUP_STUDENTS).child(App.getInstance().getKeyGroup()).orderByChild("last_name");
         mAdapter = new SettingStudentAdapter(this, attendanceQuery);
-        mRecyclerView.setAdapter(mAdapter);
+        binding.recyclerView.setAdapter(mAdapter);
     }
 
     @Override
@@ -84,6 +67,5 @@ public class SettingStudentsActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mUnbinder.unbind();
     }
 }
