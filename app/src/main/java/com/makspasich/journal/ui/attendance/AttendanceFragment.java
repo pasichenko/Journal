@@ -1,4 +1,4 @@
-package com.makspasich.journal.fragments.SetAttendance;
+package com.makspasich.journal.ui.attendance;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -16,7 +16,7 @@ import com.makspasich.journal.App;
 import com.makspasich.journal.adapters.SetAttendanceAdapter;
 import com.makspasich.journal.databinding.AttendanceListFragmentBinding;
 
-public class ListAttendanceFragment extends Fragment {
+public class AttendanceFragment extends Fragment {
     private static final String TAG = "ListAttendanceFragment";
     private AttendanceListFragmentBinding binding;
 
@@ -24,11 +24,11 @@ public class ListAttendanceFragment extends Fragment {
 
     private SetAttendanceAdapter mAdapter;
 
-    public static ListAttendanceFragment newInstance(int numberPair) {
-        return new ListAttendanceFragment(numberPair);
+    public static AttendanceFragment newInstance(int numberPair) {
+        return new AttendanceFragment(numberPair);
     }
 
-    private ListAttendanceFragment(int numberPair) {
+    private AttendanceFragment(int numberPair) {
         mAttendanceReference = FirebaseDatabase.getInstance().getReference()
                 .child(App.KEY_GROUP_DAY_COUPLE_MISSINGS)
                 .child(App.getInstance().getKeyGroup())

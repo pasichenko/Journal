@@ -1,4 +1,4 @@
-package com.makspasich.journal.activities;
+package com.makspasich.journal.ui.settingGroupActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -20,6 +20,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.makspasich.journal.App;
 import com.makspasich.journal.R;
+import com.makspasich.journal.activities.SettingStudentsActivity;
+import com.makspasich.journal.activities.SettingTypesMissingActivity;
 import com.makspasich.journal.data.model.Group;
 import com.makspasich.journal.databinding.ActivitySettingGroupBinding;
 

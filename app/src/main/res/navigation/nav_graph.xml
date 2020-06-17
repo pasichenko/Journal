@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/nav_set_attendance">
+
+    <fragment
+        android:id="@+id/nav_set_attendance"
+        android:name="com.makspasich.journal.ui.attendance.SetAttendanceFragment"
+        android:label="AttendanceFragment" />
+    <fragment
+        android:id="@+id/nav_set_reason_for_missing"
+        android:name="com.makspasich.journal.ui.reportAttendance.ReportAttendanceFragment"
+        android:label="ReportAttendanceFragment" />
+    <fragment
+        android:id="@+id/nav_report_attendance"
+        android:name="com.makspasich.journal.ui.setReason.SetReasonMissingFragment"
+        android:label="SetReasonMissingFragment" />
+    <fragment
+        android:id="@+id/nav_student_report_attendance"
+        android:name="com.makspasich.journal.ui.studentReport.StudentReportFragment"
+        android:label="SetReasonMissingFragment" />
+    <activity
+        android:id="@+id/nav_setting_group"
+        android:name="com.makspasich.journal.ui.settingGroupActivity.SettingGroupActivity"
+        android:label="activity_setting_group"
+        tools:layout="@layout/activity_setting_group" />
+</navigation>

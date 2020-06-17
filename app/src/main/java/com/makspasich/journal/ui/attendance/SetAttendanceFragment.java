@@ -1,4 +1,4 @@
-package com.makspasich.journal.fragments.SetAttendance;
+package com.makspasich.journal.ui.attendance;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -67,7 +67,7 @@ public class SetAttendanceFragment extends Fragment {
         @NonNull
         @Override
         public Fragment getItem(int position) {
-            return ListAttendanceFragment.newInstance(position + 1);
+            return AttendanceFragment.newInstance(position + 1);
         }
 
         @Override

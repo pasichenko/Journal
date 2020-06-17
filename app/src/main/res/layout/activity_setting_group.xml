@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="#E4E3E3"
     android:orientation="vertical"
-    tools:context=".activities.SettingGroupActivity">
+    tools:context=".ui.settingGroupActivity.SettingGroupActivity">
 
     <LinearLayout
         android:layout_width="match_parent"

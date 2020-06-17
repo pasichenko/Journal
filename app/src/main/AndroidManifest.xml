@@ -21,7 +21,7 @@
             android:label="@string/students"
             android:theme="@style/AppThemeMaterial" />
         <activity
-            android:name=".activities.SettingGroupActivity"
+            android:name=".ui.settingGroupActivity.SettingGroupActivity"
             android:label="@string/setting_group"
             android:theme="@style/AppThemeMaterial" />
         <activity

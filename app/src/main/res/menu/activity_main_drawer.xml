@@ -5,26 +5,32 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/set_attendance"
+            android:id="@+id/nav_set_attendance"
             android:icon="@drawable/ic_menu_camera"
             android:title="@string/set_couples_attendance"
             android:visible="false" />
         <item
-            android:id="@+id/set_reason_for_missing"
+            android:id="@+id/nav_set_reason_for_missing"
             android:icon="@drawable/ic_menu_manage"
             android:title="@string/set_reason_for_missing"
             android:visible="false" />
         <item
-            android:id="@+id/report_attendance"
+            android:id="@+id/nav_report_attendance"
             android:icon="@drawable/ic_menu_slideshow"
-            android:title="@string/report_attendance" />
+            android:title="@string/report_attendance"
+            android:visible="false" />
+        <item
+            android:id="@+id/nav_student_report_attendance"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="@string/report_attendance"
+            android:visible="false" />
 
     </group>
 
     <item android:title="@string/setting">
         <menu>
             <item
-                android:id="@+id/setting_group"
+                android:id="@+id/nav_setting_group"
                 android:icon="@drawable/ic_menu_settings"
                 android:title="@string/setting_group"
                 android:visible="false" />

@@ -1,4 +1,4 @@
-package com.makspasich.journal.fragments.SetReason;
+package com.makspasich.journal.ui.reportAttendance;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -20,23 +20,23 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.makspasich.journal.App;
 import com.makspasich.journal.R;
-import com.makspasich.journal.adapters.SetReasonMissingAdapter;
+import com.makspasich.journal.adapters.ReportAttendanceAdapter;
 import com.makspasich.journal.data.model.TypeMissing;
-import com.makspasich.journal.databinding.SetReasonFragmentBinding;
+import com.makspasich.journal.databinding.CheckAttendanceFragmentBinding;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SetReasonMissingFragment extends Fragment {
+public class ReportAttendanceFragment extends Fragment {
     private static final String TAG = "SetReasonMissingFragment";
-    private SetReasonFragmentBinding binding;
-
+    private CheckAttendanceFragmentBinding binding;
     private final DatabaseReference mRootReference;
     private DatabaseReference mReasonReference;
 
-    private SetReasonMissingAdapter mAdapter;
+    private ReportAttendanceAdapter mAdapter;
 
-    public SetReasonMissingFragment() {
+
+    public ReportAttendanceFragment() {
         this.mRootReference = FirebaseDatabase.getInstance().getReference();
     }
 
@@ -45,14 +45,18 @@ public class SetReasonMissingFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         setHasOptionsMenu(true);
-        binding = SetReasonFragmentBinding.inflate(inflater, container, false);
+        binding = CheckAttendanceFragmentBinding.inflate(inflater, container, false);
+        return binding.getRoot();
+    }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         mReasonReference = mRootReference.child(App.KEY_GROUP_DAY_STUDENT_MISSINGS)
                 .child(App.getInstance().getKeyGroup())
                 .child(App.getInstance().getSelectedDateString());
 
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        return binding.getRoot();
     }
 
     @Override
@@ -67,9 +71,8 @@ public class SetReasonMissingFragment extends Fragment {
                     TypeMissing type = typeSnapshot.getValue(TypeMissing.class);
                     types.add(type);
                 }
-                mAdapter = new SetReasonMissingAdapter(getContext(), mReasonReference, types);
+                mAdapter = new ReportAttendanceAdapter(getContext(), mReasonReference, types);
                 binding.recyclerView.setAdapter(mAdapter);
-
             }
 
             @Override
